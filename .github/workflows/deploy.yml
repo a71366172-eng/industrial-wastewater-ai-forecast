@@ -1,4 +1,4 @@
-name: Deploy static site to GitHub Pages
+name: Build and optionally deploy static site
 
 on:
   workflow_dispatch:
@@ -11,14 +11,11 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: static-site
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,16 +37,29 @@ jobs:
         run: python -m pipeline.verify_uci_artifact --input data/public/water-treatment.data --artifact frontend/public/data/uci-model.json
       - name: Verify effluent and legal artifacts
         run: python -m pipeline.verify_effluent_v4
+      - name: Upload private static-site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-static-site
+          path: frontend
+          if-no-files-found: error
+
+  deploy-pages:
+    if: ${{ vars.ENABLE_GITHUB_PAGES == 'true' }}
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
-      - name: Upload frontend artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: frontend
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-
-
-
