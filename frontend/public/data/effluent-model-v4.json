@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "1.0.0",
+  "createdAt": "2026-09-18T16:25:08.240629+00:00",
+  "modelType": "numpy-ridge-regression-prototype",
+  "deploymentStatus": "research_only",
+  "sourceDataset": "UCI Water Treatment Plant",
+  "limitations": [
+    "西班牙都市污水歷史資料，不代表臺灣化工業製程",
+    "僅使用四個進流水特徵，未含流量、加藥、曝氣與水力停留時間",
+    "模型輸出不可作為正式法規合規證明"
+  ],
+  "models": {
+    "SS-S": {
+      "target": "SS-S",
+      "features": [
+        "PH-E",
+        "COND-E",
+        "SS-E",
+        "DQO-E"
+      ],
+      "rows": {
+        "total": 522,
+        "train": 417,
+        "test": 105
+      },
+      "dateRange": {
+        "first": "D-1/1/90",
+        "last": "D-30/10/91"
+      },
+      "split": "chronological first 80% train / last 20% test",
+      "metrics": {
+        "mae": 7.747602552076911,
+        "rmse": 12.7880474915674,
+        "r2": 0.03610373982164039,
+        "medianBaselineMae": 6.838095238095238,
+        "beatsBaseline": false,
+        "improvementPercent": -13.300594424523076
+      },
+      "parameters": {
+        "featureMedians": [
+          7.8,
+          1426.0,
+          196.0,
+          404.5
+        ],
+        "featureMeans": [
+          7.85419664268584,
+          1503.68345323741,
+          224.4652278177458,
+          411.5647482014389
+        ],
+        "featureScales": [
+          0.23977985444536637,
+          403.25316269981533,
+          104.48991949134522,
+          123.68039429259046
+        ],
+        "coefficients": [
+          -1.8387026979497547,
+          0.45966312491914485,
+          -0.26817055864742884,
+          1.3351999970088593
+        ],
+        "intercept": 22.422062350119905,
+        "alpha": 1.0
+      }
+    },
+    "DQO-S": {
+      "target": "DQO-S",
+      "features": [
+        "PH-E",
+        "COND-E",
+        "SS-E",
+        "DQO-E"
+      ],
+      "rows": {
+        "total": 509,
+        "train": 407,
+        "test": 102
+      },
+      "dateRange": {
+        "first": "D-1/1/90",
+        "last": "D-30/10/91"
+      },
+      "split": "chronological first 80% train / last 20% test",
+      "metrics": {
+        "mae": 27.69774541595935,
+        "rmse": 41.85605088928505,
+        "r2": 0.13339754061814724,
+        "medianBaselineMae": 29.098039215686274,
+        "beatsBaseline": true,
+        "improvementPercent": 4.812330443805467
+      },
+      "parameters": {
+        "featureMedians": [
+          7.8,
+          1422.0,
+          196.0,
+          404.0
+        ],
+        "featureMeans": [
+          7.852334152334142,
+          1502.2211302211301,
+          228.7027027027027,
+          411.4742014742015
+        ],
+        "featureScales": [
+          0.2404708861059408,
+          401.99021495504985,
+          137.5993813467021,
+          123.63284272905213
+        ],
+        "coefficients": [
+          -4.785039263048973,
+          3.900653024746727,
+          -2.9290023246803765,
+          11.67308104569889
+        ],
+        "intercept": 88.1105651105651,
+        "alpha": 1.0
+      }
+    }
+  }
+}

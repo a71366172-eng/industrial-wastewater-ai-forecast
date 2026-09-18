@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+data/raw/
+data/private/
+*.log
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+artifacts/
+raw/
+
+sync-logs/
+frontend-v4.png

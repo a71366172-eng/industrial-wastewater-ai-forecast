@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "snapshot_id": "demo-2026-09-17-cod",
+  "mode": "demo",
+  "generated_at": "2026-09-17T08:00:00+08:00",
+  "valid_until": "2026-09-17T10:00:00+08:00",
+  "station_id": "demo-plant",
+  "station_name": "示範工業區污水處理廠",
+  "metric_id": "cod",
+  "metric_name": "化學需氧量（COD）",
+  "unit": "mg/L",
+  "threshold": 90,
+  "source": {
+    "name": "專題示範資料",
+    "url": "https://cwmspublic.moenv.gov.tw/"
+  },
+  "observations_path": "observations.json",
+  "forecasts_path": "forecasts.json",
+  "events_path": "events.json"
+}

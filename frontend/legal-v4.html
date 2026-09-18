@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>放流水法規預警中心</title>
+  <style>
+    :root{--ink:#152b2b;--muted:#637473;--paper:#f3f6ef;--card:#fff;--line:#d8e0d7;--teal:#0c706c;--teal2:#d9eeea;--amber:#bd7815;--amber2:#fff1d7;--red:#b4483d;--red2:#fae1dc;--shadow:0 18px 50px rgba(29,63,59,.08)}
+    *{box-sizing:border-box}body{margin:0;color:var(--ink);background:radial-gradient(circle at 85% 5%,#d9ece5 0,transparent 30%),var(--paper);font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif}
+    button,input,select{font:inherit}.shell{max-width:1380px;margin:auto;padding:28px}.top{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:20px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;color:var(--teal);text-transform:uppercase}.top h1{font-family:Georgia,"Noto Serif TC",serif;font-size:clamp(30px,4vw,54px);line-height:1;margin:10px 0}.subtitle{color:var(--muted);max-width:720px;line-height:1.7}.badge{padding:9px 13px;border-radius:99px;background:var(--amber2);color:#80500c;font-weight:800;font-size:13px;white-space:nowrap}.grid{display:grid;grid-template-columns:310px 1fr;gap:20px}.card{background:rgba(255,255,255,.91);border:1px solid rgba(216,224,215,.9);border-radius:20px;box-shadow:var(--shadow)}.settings{padding:22px;align-self:start}.settings h2,.main h2{margin:0 0 6px;font-size:18px}.hint{color:var(--muted);font-size:13px;line-height:1.6}.field{margin-top:16px}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}.field input,.field select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{width:100%;border:0;border-radius:11px;padding:12px;margin-top:18px;background:var(--teal);color:white;font-weight:800;cursor:pointer}.btn.secondary{background:#e9efea;color:var(--ink);margin-top:8px}.main{padding:24px}.blocker{display:flex;align-items:flex-start;gap:14px;padding:16px;border-radius:14px;background:var(--amber2);color:#70450a;margin:18px 0}.blocker strong{display:block;margin-bottom:4px}.blocker p{margin:0;font-size:13px;line-height:1.55}.dot{width:12px;height:12px;border-radius:50%;background:var(--amber);margin-top:4px;flex:0 0 auto}.meta{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}.meta span{font-size:12px;padding:8px 10px;border-radius:8px;background:#eef3ee;color:#526360}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.metric{border:1px solid var(--line);border-radius:16px;padding:18px;min-height:190px}.metric-head{display:flex;justify-content:space-between;align-items:center}.metric h3{font-size:13px;margin:0;color:var(--muted)}.state{font-size:11px;font-weight:800;border-radius:99px;padding:5px 8px;background:#edf1ed}.number{font-family:Georgia,serif;font-size:38px;margin:16px 0 4px}.unit{font-size:12px;color:var(--muted)}.bar{height:8px;background:#e6ebe6;border-radius:9px;margin:20px 0 8px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--teal);border-radius:9px;transition:.35s}.row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:8px}.legal-note{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.65}.legal-note a{color:var(--teal)}.section-title{display:flex;justify-content:space-between;align-items:end;margin:26px 0 12px}.section-title small{color:var(--muted)}.workflow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.step{padding:15px;border-radius:13px;background:#edf3ed;font-size:12px;line-height:1.5}.step b{display:block;color:var(--teal);font-size:13px;margin-bottom:5px}.ok .blocker{background:var(--teal2);color:#115954}.ok .dot{background:var(--teal)}.warning .state{background:var(--amber2);color:#80500c}.danger .state{background:var(--red2);color:#86342c}.danger .bar i{background:var(--red)}.warning .bar i{background:var(--amber)}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}.metrics,.workflow{grid-template-columns:1fr}.top{flex-direction:column}.shell{padding:18px}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header class="top">
+    <div><div class="eyebrow">Effluent compliance forecast · prototype v4</div><h1>放流水法規預警中心</h1><div class="subtitle">先確認適用標準，再看預測濃度與限值餘裕。AI 結果是操作預警；正式合規仍以有效許可條件與合格檢測結果為準。</div></div>
+    <div class="badge" id="headerBadge">研究原型｜尚未設定法規</div>
+  </header>
+  <div class="grid">
+    <aside class="card settings">
+      <h2>適用法規設定</h2><div class="hint">請依工廠許可內容填寫。系統不預設全產業共用門檻。</div>
+      <div class="field"><label for="industry">事業類別</label><select id="industry"><option value="">請選擇</option><option>化工業</option><option>金屬表面處理業</option><option>其他事業</option></select></div>
+      <div class="field"><label for="route">排放去向</label><select id="route"><option value="">請選擇</option><option>直接排放至承受水體</option><option>納入污水下水道系統</option><option>海洋放流</option></select></div>
+      <div class="field"><label for="source">限值依據</label><input id="source" placeholder="例：許可證字號／中央附表"></div>
+      <div class="field"><label>SS（mg/L）</label><div class="two"><input id="ssValue" type="number" min="0" step="0.1" placeholder="預測值"><input id="ssLimit" type="number" min="0" step="0.1" placeholder="適用限值"></div></div>
+      <div class="field"><label>COD（mg/L）</label><div class="two"><input id="codValue" type="number" min="0" step="0.1" placeholder="預測值"><input id="codLimit" type="number" min="0" step="0.1" placeholder="適用限值"></div></div>
+      <div class="field"><label>pH（預測值／下限／上限）</label><div class="two" style="grid-template-columns:1fr 1fr 1fr"><input id="phValue" type="number" step="0.1" placeholder="預測"><input id="phMin" type="number" step="0.1" placeholder="下限"><input id="phMax" type="number" step="0.1" placeholder="上限"></div></div>
+      <button class="btn" id="apply">套用設定並評估</button><button class="btn secondary" id="clear">清除法規設定</button>
+    </aside>
+    <section class="card main" id="mainPanel">
+      <h2>下一取樣時點預報</h2><div class="hint">此畫面先驗證法規判讀流程；接續將串接 SS-S、DQO-S 模型產物。</div>
+      <div class="blocker" id="blocker"><span class="dot"></span><div><strong id="blockTitle">尚無法判定</strong><p id="blockText">缺少事業類別、排放去向、限值依據或污染物限值。請先完成左側設定。</p></div></div>
+      <div class="meta"><span id="industryMeta">業別：未設定</span><span id="routeMeta">去向：未設定</span><span id="sourceMeta">依據：未設定</span><span>狀態：預測值，非正式檢驗結果</span></div>
+      <div class="metrics">
+        <article class="metric" id="ssCard"><div class="metric-head"><h3>放流水 SS</h3><span class="state">未評估</span></div><div class="number" id="ssNumber">—</div><div class="unit">mg/L · AI 預測</div><div class="bar"><i></i></div><div class="row"><span>適用限值</span><b id="ssLimitOut">—</b></div><div class="row"><span>限值餘裕</span><b id="ssMargin">—</b></div></article>
+        <article class="metric" id="codCard"><div class="metric-head"><h3>放流水 COD</h3><span class="state">未評估</span></div><div class="number" id="codNumber">—</div><div class="unit">mg/L · AI 預測</div><div class="bar"><i></i></div><div class="row"><span>適用限值</span><b id="codLimitOut">—</b></div><div class="row"><span>限值餘裕</span><b id="codMargin">—</b></div></article>
+        <article class="metric" id="phCard"><div class="metric-head"><h3>放流水 pH</h3><span class="state">未評估</span></div><div class="number" id="phNumber">—</div><div class="unit">pH · AI 預測</div><div class="bar"><i></i></div><div class="row"><span>適用範圍</span><b id="phLimitOut">—</b></div><div class="row"><span>最近界限餘裕</span><b id="phMargin">—</b></div></article>
+      </div>
+      <div class="section-title"><h2>系統判讀順序</h2><small>模型與法規規則分離</small></div>
+      <div class="workflow"><div class="step"><b>01 資料</b>進流水、操作條件與時間對齊</div><div class="step"><b>02 AI 預測</b>預測 SS、COD、pH 與不確定性</div><div class="step"><b>03 法規規則</b>依設定檔計算限值餘裕</div><div class="step"><b>04 人員處置</b>檢查設備、採樣與操作調整</div></div>
+      <div class="legal-note">限值須由負責人依現行法規、地方加嚴及水污染防治許可內容確認。官方來源：<a href="https://oaout.moenv.gov.tw/law/LawContent.aspx?id=FL015489&media=print" target="_blank" rel="noreferrer">環境部《放流水標準》</a>。本頁不產生正式合規證明。</div>
+    </section>
+  </div>
+</main>
+<script>
+  const $=id=>document.getElementById(id), ids=['industry','route','source','ssValue','ssLimit','codValue','codLimit','phValue','phMin','phMax'];
+  const val=id=>$(id).value.trim(), num=id=>Number(val(id));
+  function mark(cardId,ratio,unsafe){const c=$(cardId),s=c.querySelector('.state'),b=c.querySelector('.bar i');c.classList.remove('warning','danger');if(unsafe){c.classList.add('danger');s.textContent='預測超出';}else if(ratio>=.8){c.classList.add('warning');s.textContent='接近限值';}else{s.textContent='預測低於限值';}b.style.width=Math.min(100,Math.max(3,ratio*100))+'%'}
+  function reset(){ids.forEach(id=>$(id).value='');localStorage.removeItem('legal-v4');render(false)}
+  function render(save=true){const complete=val('industry')&&val('route')&&val('source')&&val('ssValue')&&val('ssLimit')&&val('codValue')&&val('codLimit')&&val('phValue')&&val('phMin')&&val('phMax');$('industryMeta').textContent='業別：'+(val('industry')||'未設定');$('routeMeta').textContent='去向：'+(val('route')||'未設定');$('sourceMeta').textContent='依據：'+(val('source')||'未設定');if(!complete){$('mainPanel').classList.remove('ok');$('headerBadge').textContent='研究原型｜尚未設定法規';$('blockTitle').textContent='尚無法判定';$('blockText').textContent='缺少事業類別、排放去向、限值依據或污染物限值。請先完成左側設定。';return}if(save)localStorage.setItem('legal-v4',JSON.stringify(Object.fromEntries(ids.map(id=>[id,$(id).value]))));const ss=num('ssValue'),sl=num('ssLimit'),cod=num('codValue'),cl=num('codLimit'),ph=num('phValue'),lo=num('phMin'),hi=num('phMax');$('ssNumber').textContent=ss.toFixed(1);$('ssLimitOut').textContent=sl.toFixed(1)+' mg/L';$('ssMargin').textContent=(sl-ss).toFixed(1)+' mg/L';$('codNumber').textContent=cod.toFixed(1);$('codLimitOut').textContent=cl.toFixed(1)+' mg/L';$('codMargin').textContent=(cl-cod).toFixed(1)+' mg/L';$('phNumber').textContent=ph.toFixed(1);$('phLimitOut').textContent=lo.toFixed(1)+'–'+hi.toFixed(1);$('phMargin').textContent=Math.min(ph-lo,hi-ph).toFixed(1);mark('ssCard',ss/sl,ss>sl);mark('codCard',cod/cl,cod>cl);const phUnsafe=ph<lo||ph>hi;mark('phCard',phUnsafe?1:1-Math.min(ph-lo,hi-ph)/(hi-lo),phUnsafe);$('mainPanel').classList.add('ok');$('headerBadge').textContent='研究原型｜法規設定已套用';$('blockTitle').textContent='完成預測風險評估';$('blockText').textContent='以下結果依所填設定計算，屬操作預警，不等同正式合規認定。'}
+  $('apply').onclick=()=>render(true);$('clear').onclick=reset;try{const saved=JSON.parse(localStorage.getItem('legal-v4'));if(saved){ids.forEach(id=>$(id).value=saved[id]||'');render(false)}}catch(e){}
+</script>
+</body>
+</html>

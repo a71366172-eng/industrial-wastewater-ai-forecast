@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "updatedAt": "2026-09-19",
+  "profiles": [
+    {
+      "id": "tw-chemical-central-surface-water-2024-12-18",
+      "name": "臺灣化工業－中央附表四基準",
+      "industry": "化工業",
+      "dischargeRoute": "surface_water",
+      "jurisdiction": "TW",
+      "effectiveFrom": "2024-12-18",
+      "status": "reference_baseline",
+      "limits": {
+        "ph": { "kind": "range", "min": 6.0, "max": 9.0, "unit": "pH" },
+        "ss": { "kind": "maximum", "max": 30, "unit": "mg/L" },
+        "cod": { "kind": "maximum", "max": 100, "unit": "mg/L", "method": "重鉻酸鉀氧化法" }
+      },
+      "source": {
+        "title": "環境部《放流水標準》附表四",
+        "lawUrl": "https://oaout.moenv.gov.tw/law/LawContent.aspx?id=FL015489&media=print",
+        "attachmentUrl": "https://oaout.moenv.gov.tw/law/Download.ashx?FileID=135027&id=FL015489&type=LAW"
+      },
+      "caveat": "僅為化工業直接排放至地面水體的中央基準。若地方加嚴、總量管制、環評承諾或有效許可條件更嚴，必須以個案條件覆寫。"
+    }
+  ]
+}

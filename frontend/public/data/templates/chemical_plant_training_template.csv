@@ -1,0 +1,2 @@
+timestamp,plant_id,discharge_point,influent_ph,influent_conductivity_us_cm,influent_ss_mg_l,influent_cod_mg_l,influent_flow_m3_h,coagulant_dose_mg_l,polymer_dose_mg_l,aeration_do_mg_l,sludge_concentration_mg_l,effluent_ph,effluent_ss_mg_l,effluent_cod_mg_l,sample_type,quality_flag
+2026-01-01T08:00:00+08:00,PLANT_A,D01,7.10,1250,180,420,52,35,1.2,2.1,3200,7.20,18,72,lab,valid

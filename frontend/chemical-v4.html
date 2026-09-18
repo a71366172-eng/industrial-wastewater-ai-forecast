@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>化工業放流水法規預警</title>
+  <style>html,body,iframe{width:100%;height:100%;margin:0;border:0;background:#f3f6ef}.loading{position:fixed;inset:0;display:grid;place-items:center;font:700 15px "Microsoft JhengHei",sans-serif;color:#0c706c;background:#f3f6ef;z-index:2}</style>
+</head>
+<body>
+  <div class="loading" id="loading">正在載入化工業中央基準設定…</div>
+  <iframe id="dashboard" src="legal-v4.html" title="化工業放流水法規預警中心"></iframe>
+  <script>
+    const frame=document.getElementById('dashboard');
+    frame.addEventListener('load',()=>{
+      const d=frame.contentDocument;
+      const values={
+        industry:'化工業',
+        route:'直接排放至承受水體',
+        source:'環境部《放流水標準》附表四（中央基準，2024-12-18 修正）',
+        ssValue:'18',ssLimit:'30',
+        codValue:'72',codLimit:'100',
+        phValue:'7.2',phMin:'6.0',phMax:'9.0'
+      };
+      Object.entries(values).forEach(([id,value])=>{const el=d.getElementById(id);if(el)el.value=value});
+      d.getElementById('apply')?.click();
+      const note=d.querySelector('.legal-note');
+      if(note)note.insertAdjacentHTML('afterbegin','<strong>目前預設：</strong>化工業直接排放至地面水體之中央附表四基準；若許可證、地方加嚴、環評或總量管制更嚴，請以個案值覆寫。<br>');
+      document.getElementById('loading').remove();
+    });
+  </script>
+</body>
+</html>

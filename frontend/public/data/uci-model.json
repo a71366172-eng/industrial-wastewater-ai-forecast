@@ -1,0 +1,1506 @@
+{
+  "schema_version": "2.0",
+  "generated_at": "2026-09-17T16:05:35.869869+00:00",
+  "mode": "historical-research",
+  "source": {
+    "name": "UCI Water Treatment Plant",
+    "url": "https://archive.ics.uci.edu/dataset/106/water+treatment+plant",
+    "scope": "1990–1991 urban wastewater daily measurements"
+  },
+  "features": [
+    {
+      "field": "PH-E",
+      "label": "進水 pH",
+      "unit": "pH",
+      "min": 7.2,
+      "max": 8.7
+    },
+    {
+      "field": "COND-E",
+      "label": "進水導電度",
+      "unit": "µS/cm",
+      "min": 651.0,
+      "max": 3230.0
+    },
+    {
+      "field": "SS-E",
+      "label": "進水懸浮固體（SS）",
+      "unit": "mg/L",
+      "min": 110.0,
+      "max": 1016.0
+    },
+    {
+      "field": "DQO-E",
+      "label": "進水化學需氧量（COD）",
+      "unit": "mg/L",
+      "min": 81.0,
+      "max": 941.0
+    }
+  ],
+  "target": {
+    "field": "RD-SS-P",
+    "label": "初沉池 SS 去除效率",
+    "unit": "%",
+    "warning_threshold": 50,
+    "threshold_kind": "research"
+  },
+  "split": {
+    "train": 313,
+    "validation": 105,
+    "test": 105
+  },
+  "data_report": {
+    "raw_rows": 527,
+    "usable_rows": 523,
+    "missing_target_rows": 4,
+    "rows_with_missing_features": 6
+  },
+  "model": {
+    "type": "ridge-regression",
+    "alpha": 0.01,
+    "intercept": 57.56507177033493,
+    "medians": {
+      "PH-E": 7.8,
+      "COND-E": 1428.5,
+      "SS-E": 196.0,
+      "DQO-E": 404.0
+    },
+    "means": {
+      "PH-E": 7.854066985645921,
+      "COND-E": 1504.098086124402,
+      "SS-E": 224.33014354066987,
+      "DQO-E": 411.5598086124402
+    },
+    "scales": {
+      "PH-E": 0.23950749967981247,
+      "COND-E": 403.5631816398574,
+      "SS-E": 104.40130570082357,
+      "DQO-E": 123.74726331887402
+    },
+    "coefficients": {
+      "PH-E": -1.5317040238830306,
+      "COND-E": 1.1514476455710134,
+      "SS-E": 6.486604660711746,
+      "DQO-E": -0.62797318603638
+    }
+  },
+  "metrics": {
+    "test_rows": 105,
+    "model_mae": 10.1004933468469,
+    "baseline_mae": 10.190476190476193,
+    "rmse": 13.183024796671688,
+    "r2": -0.1708779780144949,
+    "baseline_value": 58.7,
+    "improvement_percent": 0.8830092131846559
+  },
+  "test_cases": [
+    {
+      "date": "1991-05-24",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1257.0,
+        "SS-E": 2008.0,
+        "DQO-E": 627.0
+      },
+      "actual": 96.1,
+      "predicted": 167.57405871836283,
+      "risk_probability": 1.491887521768314e-14,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-05-26",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1035.0,
+        "SS-E": 174.0,
+        "DQO-E": 338.0
+      },
+      "actual": 68.5,
+      "predicted": 55.09765983448895,
+      "risk_probability": 0.30328622992788307,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-05-27",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 2070.0,
+        "SS-E": 190.0,
+        "DQO-E": 323.0
+      },
+      "actual": 42.7,
+      "predicted": 57.841902990965956,
+      "risk_probability": 0.1941995578653735,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-05-28",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1889.0,
+        "SS-E": 1228.0,
+        "DQO-E": 432.0
+      },
+      "actual": 94.7,
+      "predicted": 122.54382854975698,
+      "risk_probability": 5.1364065728316095e-09,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-05-29",
+      "inputs": {
+        "PH-E": 7.9,
+        "COND-E": 1174.0,
+        "SS-E": 286.0,
+        "DQO-E": 459.0
+      },
+      "actual": 73.7,
+      "predicted": 59.9203787090183,
+      "risk_probability": 0.07827762878873931,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-05-30",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1869.0,
+        "SS-E": 308.0,
+        "DQO-E": 546.0
+      },
+      "actual": 81.9,
+      "predicted": 64.10779745182701,
+      "risk_probability": 0.03442314158724385,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-05-31",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 2120.0,
+        "SS-E": 964.0,
+        "DQO-E": 483.0
+      },
+      "actual": 88.0,
+      "predicted": 105.26236370721118,
+      "risk_probability": 4.984986110329619e-07,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-02",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1459.0,
+        "SS-E": 178.0,
+        "DQO-E": 295.0
+      },
+      "actual": 55.9,
+      "predicted": 56.134630961575134,
+      "risk_probability": 0.2635019872793528,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-03",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1315.0,
+        "SS-E": 216.0,
+        "DQO-E": 462.0
+      },
+      "actual": 66.7,
+      "predicted": 56.59777715038232,
+      "risk_probability": 0.1913160963437605,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-04",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1171.0,
+        "SS-E": 242.0,
+        "DQO-E": 467.0
+      },
+      "actual": 63.5,
+      "predicted": 58.41648281850784,
+      "risk_probability": 0.12948902821164768,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-05",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1224.0,
+        "SS-E": 228.0,
+        "DQO-E": 358.0
+      },
+      "actual": 75.4,
+      "predicted": 57.611475977228935,
+      "risk_probability": 0.16226770440680963,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-06",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1335.0,
+        "SS-E": 218.0,
+        "DQO-E": 416.0
+      },
+      "actual": 67.8,
+      "predicted": 57.652060054535994,
+      "risk_probability": 0.16821051163851666,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-07",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1102.0,
+        "SS-E": 174.0,
+        "DQO-E": 438.0
+      },
+      "actual": 66.3,
+      "predicted": 54.78136012768978,
+      "risk_probability": 0.30467737581726106,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-09",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1019.0,
+        "SS-E": 168.0,
+        "DQO-E": 313.0
+      },
+      "actual": 49.6,
+      "predicted": 54.166563590440916,
+      "risk_probability": 0.3459762506099716,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-06-10",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1234.0,
+        "SS-E": 264.0,
+        "DQO-E": 591.0
+      },
+      "actual": 73.6,
+      "predicted": 58.694348436382555,
+      "risk_probability": 0.10289210777850324,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-12",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1817.0,
+        "SS-E": 324.0,
+        "DQO-E": 523.0
+      },
+      "actual": 75.9,
+      "predicted": 66.34929564162003,
+      "risk_probability": 0.022326841163285073,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-13",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1326.0,
+        "SS-E": 286.0,
+        "DQO-E": 511.0
+      },
+      "actual": 72.3,
+      "predicted": 62.008751206776175,
+      "risk_probability": 0.05704525131889324,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-14",
+      "inputs": {
+        "PH-E": 7.2,
+        "COND-E": 1769.0,
+        "SS-E": 138.0,
+        "DQO-E": 549.0
+      },
+      "actual": 82.6,
+      "predicted": 56.44251829796652,
+      "risk_probability": 0.2938539065063707,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-16",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1535.0,
+        "SS-E": 218.0,
+        "DQO-E": 353.0
+      },
+      "actual": 67.2,
+      "predicted": 59.82144787543699,
+      "risk_probability": 0.12888207650786745,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-17",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1775.0,
+        "SS-E": 190.0,
+        "DQO-E": 330.0
+      },
+      "actual": 62.4,
+      "predicted": 56.96468563039159,
+      "risk_probability": 0.21815487783914278,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-18",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1309.0,
+        "SS-E": 222.0,
+        "DQO-E": 473.0
+      },
+      "actual": 69.4,
+      "predicted": 56.897625568627,
+      "risk_probability": 0.17711704346746077,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-19",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1565.0,
+        "SS-E": 232.0,
+        "DQO-E": 392.0
+      },
+      "actual": 72.3,
+      "predicted": 59.93945084194022,
+      "risk_probability": 0.11380309708656419,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-20",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1592.0,
+        "SS-E": 200.0,
+        "DQO-E": 403.0
+      },
+      "actual": 68.6,
+      "predicted": 56.693415071702404,
+      "risk_probability": 0.20945009490269229,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-21",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1396.0,
+        "SS-E": 200.0,
+        "DQO-E": 438.0
+      },
+      "actual": 65.4,
+      "predicted": 56.59609715897943,
+      "risk_probability": 0.21178865191041474,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-24",
+      "inputs": {
+        "PH-E": 7.3,
+        "COND-E": 1134.0,
+        "SS-E": 208.0,
+        "DQO-E": 310.0
+      },
+      "actual": 61.9,
+      "predicted": 59.55325337011641,
+      "risk_probability": 0.14765858794860093,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-25",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1305.0,
+        "SS-E": 190.0,
+        "DQO-E": 404.0
+      },
+      "actual": 69.8,
+      "predicted": 56.527201405625554,
+      "risk_probability": 0.2299238050688967,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-26",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1560.0,
+        "SS-E": 198.0,
+        "DQO-E": 310.0
+      },
+      "actual": 58.4,
+      "predicted": 58.228836204325404,
+      "risk_probability": 0.18159867314291497,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-27",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1565.0,
+        "SS-E": 164.0,
+        "DQO-E": 380.0
+      },
+      "actual": 72.6,
+      "predicted": 54.49636312883704,
+      "risk_probability": 0.3288160841559421,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-28",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1668.0,
+        "SS-E": 178.0,
+        "DQO-E": 380.0
+      },
+      "actual": 63.7,
+      "predicted": 56.29960571376897,
+      "risk_probability": 0.25042435590175993,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-06-30",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1704.0,
+        "SS-E": 170.0,
+        "DQO-E": 372.0
+      },
+      "actual": 55.8,
+      "predicted": 56.58538891487224,
+      "risk_probability": 0.2541645487545521,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-01",
+      "inputs": {
+        "PH-E": 7.4,
+        "COND-E": 1960.0,
+        "SS-E": 242.0,
+        "DQO-E": 333.0
+      },
+      "actual": 60.4,
+      "predicted": 63.266229173769055,
+      "risk_probability": 0.06735542646915654,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-02",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1293.0,
+        "SS-E": 208.0,
+        "DQO-E": 105.0
+      },
+      "actual": 75.4,
+      "predicted": 57.84960263247812,
+      "risk_probability": 0.19230376927300255,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-03",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1565.0,
+        "SS-E": 204.0,
+        "DQO-E": 404.0
+      },
+      "actual": 65.5,
+      "predicted": 58.138874483962745,
+      "risk_probability": 0.1718062029274288,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-04",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1535.0,
+        "SS-E": 198.0,
+        "DQO-E": 485.0
+      },
+      "actual": 50.0,
+      "predicted": 55.99039887502665,
+      "risk_probability": 0.22541514638473228,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-05",
+      "inputs": {
+        "PH-E": 7.4,
+        "COND-E": 1337.0,
+        "SS-E": 202.0,
+        "DQO-E": 545.0
+      },
+      "actual": 72.1,
+      "predicted": 57.92760137890811,
+      "risk_probability": 0.1732315066075201,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-07",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1135.0,
+        "SS-E": 108.0,
+        "DQO-E": 351.0
+      },
+      "actual": 31.9,
+      "predicted": 51.85585633216941,
+      "risk_probability": 0.5371476005297824,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-07-08",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1355.0,
+        "SS-E": 368.0,
+        "DQO-E": 481.0
+      },
+      "actual": 68.2,
+      "predicted": 67.97803476808343,
+      "risk_probability": 0.013164592884678788,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-09",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1340.0,
+        "SS-E": 298.0,
+        "DQO-E": 461.0
+      },
+      "actual": 60.4,
+      "predicted": 63.0480056164472,
+      "risk_probability": 0.04586386893932783,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-10",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1440.0,
+        "SS-E": 154.0,
+        "DQO-E": 396.0
+      },
+      "actual": 55.4,
+      "predicted": 54.07672632543321,
+      "risk_probability": 0.36079194208435583,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-11",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1413.0,
+        "SS-E": 244.0,
+        "DQO-E": 375.0
+      },
+      "actual": 65.7,
+      "predicted": 59.698087984350494,
+      "risk_probability": 0.10973834970154155,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-12",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1235.0,
+        "SS-E": 288.0,
+        "DQO-E": 604.0
+      },
+      "actual": 53.2,
+      "predicted": 60.12238611581253,
+      "risk_probability": 0.07123142706362488,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-14",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1147.0,
+        "SS-E": 170.0,
+        "DQO-E": 388.0
+      },
+      "actual": 65.7,
+      "predicted": 54.914960603823815,
+      "risk_probability": 0.3102774366774601,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-15",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1202.0,
+        "SS-E": 254.0,
+        "DQO-E": 545.0
+      },
+      "actual": 50.0,
+      "predicted": 58.85468737115477,
+      "risk_probability": 0.10972856095654819,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-16",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1593.0,
+        "SS-E": 208.0,
+        "DQO-E": 412.0
+      },
+      "actual": 34.0,
+      "predicted": 58.426692827339416,
+      "risk_probability": 0.1609432098363235,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-07-17",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1315.0,
+        "SS-E": 242.0,
+        "DQO-E": 359.0
+      },
+      "actual": 50.7,
+      "predicted": 60.014927848169776,
+      "risk_probability": 0.10782142813006519,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-18",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1518.0,
+        "SS-E": 222.0,
+        "DQO-E": 495.0
+      },
+      "actual": 49.5,
+      "predicted": 58.66134755905412,
+      "risk_probability": 0.13948610510674922,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-07-19",
+      "inputs": {
+        "PH-E": 6.9,
+        "COND-E": 1183.0,
+        "SS-E": 242.0,
+        "DQO-E": 472.0
+      },
+      "actual": 50.8,
+      "predicted": 63.54152695027942,
+      "risk_probability": 0.06472134977361613,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-21",
+      "inputs": {
+        "PH-E": 7.3,
+        "COND-E": 1367.0,
+        "SS-E": 216.0,
+        "DQO-E": 395.0
+      },
+      "actual": 56.0,
+      "predicted": 60.283756604155606,
+      "risk_probability": 0.12250010509653907,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-22",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1672.0,
+        "SS-E": 208.0,
+        "DQO-E": 605.0
+      },
+      "actual": 64.3,
+      "predicted": 58.31221211863584,
+      "risk_probability": 0.15326832367444332,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-23",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 2150.0,
+        "SS-E": 224.0,
+        "DQO-E": 432.0
+      },
+      "actual": 55.8,
+      "predicted": 60.90853721352089,
+      "risk_probability": 0.10099949273916094,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-24",
+      "inputs": {
+        "PH-E": 8.1,
+        "COND-E": 1319.0,
+        "SS-E": 140.0,
+        "DQO-E": 318.0
+      },
+      "actual": 48.5,
+      "predicted": 50.69938115164893,
+      "risk_probability": 0.5186344423152881,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-07-25",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 2150.0,
+        "SS-E": 290.0,
+        "DQO-E": 408.0
+      },
+      "actual": 50.5,
+      "predicted": 64.4914820803935,
+      "risk_probability": 0.03842830399829869,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-26",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 2110.0,
+        "SS-E": 200.0,
+        "DQO-E": 253.0
+      },
+      "actual": 63.3,
+      "predicted": 60.21161536177883,
+      "risk_probability": 0.13825671846715198,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-28",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1645.0,
+        "SS-E": 148.0,
+        "DQO-E": 263.0
+      },
+      "actual": 58.2,
+      "predicted": 56.242816463351964,
+      "risk_probability": 0.30734147369212367,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-29",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1870.0,
+        "SS-E": 138.0,
+        "DQO-E": 273.0
+      },
+      "actual": 60.5,
+      "predicted": 54.29415908178062,
+      "risk_probability": 0.38623223368154574,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-30",
+      "inputs": {
+        "PH-E": 7.4,
+        "COND-E": 1450.0,
+        "SS-E": 170.0,
+        "DQO-E": 394.0
+      },
+      "actual": 60.2,
+      "predicted": 57.02807795642361,
+      "risk_probability": 0.2433378647311813,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-07-31",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1531.0,
+        "SS-E": 168.0,
+        "DQO-E": 336.0
+      },
+      "actual": 60.0,
+      "predicted": 56.78973142058968,
+      "risk_probability": 0.25586090928890964,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-01",
+      "inputs": {
+        "PH-E": 7.4,
+        "COND-E": 1720.0,
+        "SS-E": 194.0,
+        "DQO-E": 348.0
+      },
+      "actual": 53.5,
+      "predicted": 59.52303115771745,
+      "risk_probability": 0.1556284128593632,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-02",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1520.0,
+        "SS-E": 172.0,
+        "DQO-E": 281.0
+      },
+      "actual": 47.7,
+      "predicted": 57.28597736060165,
+      "risk_probability": 0.2401883231741823,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-08-04",
+      "inputs": {
+        "PH-E": 7.3,
+        "COND-E": 1210.0,
+        "SS-E": 124.0,
+        "DQO-E": 288.0
+      },
+      "actual": 52.3,
+      "predicted": 54.66269701275356,
+      "risk_probability": 0.40755047721065507,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-05",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1114.0,
+        "SS-E": 186.0,
+        "DQO-E": 284.0
+      },
+      "actual": 73.2,
+      "predicted": 56.34267100560669,
+      "risk_probability": 0.2506974118295305,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-06",
+      "inputs": {
+        "PH-E": 7.9,
+        "COND-E": 948.0,
+        "SS-E": 196.0,
+        "DQO-E": 316.0
+      },
+      "actual": 64.5,
+      "predicted": 54.409398168294636,
+      "risk_probability": 0.29203200986586825,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-07",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 899.0,
+        "SS-E": 186.0,
+        "DQO-E": 328.0
+      },
+      "actual": 64.1,
+      "predicted": 55.50594808636205,
+      "risk_probability": 0.27430908557866596,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-08",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 866.0,
+        "SS-E": 506.0,
+        "DQO-E": 521.0
+      },
+      "actual": 86.9,
+      "predicted": 74.31445076438523,
+      "risk_probability": 0.001817791291185553,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-09",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 940.0,
+        "SS-E": 144.0,
+        "DQO-E": 376.0
+      },
+      "actual": 47.6,
+      "predicted": 52.13030321425595,
+      "risk_probability": 0.45846499923383194,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-08-11",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 732.0,
+        "SS-E": 172.0,
+        "DQO-E": 171.0
+      },
+      "actual": 77.7,
+      "predicted": 55.59586419708301,
+      "risk_probability": 0.3077193232618416,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-12",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 829.0,
+        "SS-E": 234.0,
+        "DQO-E": 233.0
+      },
+      "actual": 43.6,
+      "predicted": 58.770624640872995,
+      "risk_probability": 0.1430598569006206,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-08-13",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 890.0,
+        "SS-E": 154.0,
+        "DQO-E": 268.0
+      },
+      "actual": 41.6,
+      "predicted": 54.43606375762565,
+      "risk_probability": 0.3671489513282886,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-08-14",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 866.0,
+        "SS-E": 98.0,
+        "DQO-E": 251.0
+      },
+      "actual": 36.5,
+      "predicted": 50.33497217157875,
+      "risk_probability": 0.6237503646106438,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-08-16",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1049.0,
+        "SS-E": 178.0,
+        "DQO-E": 375.0
+      },
+      "actual": 66.7,
+      "predicted": 55.19836868950095,
+      "risk_probability": 0.29072876390253416,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-18",
+      "inputs": {
+        "PH-E": 7.3,
+        "COND-E": 1072.0,
+        "SS-E": 166.0,
+        "DQO-E": 240.0
+      },
+      "actual": 54.5,
+      "predicted": 57.12205883827691,
+      "risk_probability": 0.26153509587453394,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-19",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1096.0,
+        "SS-E": 146.0,
+        "DQO-E": 310.0
+      },
+      "actual": 61.4,
+      "predicted": 53.674114575022266,
+      "risk_probability": 0.4019075950478697,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-20",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 939.0,
+        "SS-E": 148.0,
+        "DQO-E": 304.0
+      },
+      "actual": 60.3,
+      "predicted": 53.380872478728996,
+      "risk_probability": 0.4116154995240607,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-22",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1044.0,
+        "SS-E": 124.0,
+        "DQO-E": 307.0
+      },
+      "actual": 54.4,
+      "predicted": 52.81360238378293,
+      "risk_probability": 0.47616527130968944,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-23",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 992.0,
+        "SS-E": 128.0,
+        "DQO-E": 265.0
+      },
+      "actual": 45.0,
+      "predicted": 52.48737428110005,
+      "risk_probability": 0.48520098044325527,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-08-25",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 962.0,
+        "SS-E": 140.0,
+        "DQO-E": 585.0
+      },
+      "actual": 71.6,
+      "predicted": 52.16299220919952,
+      "risk_probability": 0.4457713106543648,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-26",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 894.0,
+        "SS-E": 176.0,
+        "DQO-E": 252.0
+      },
+      "actual": 62.3,
+      "predicted": 54.61651806241447,
+      "risk_probability": 0.32399579932686046,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-27",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 988.0,
+        "SS-E": 172.0,
+        "DQO-E": 346.0
+      },
+      "actual": 58.3,
+      "predicted": 53.51965452244351,
+      "risk_probability": 0.3586126172246922,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-28",
+      "inputs": {
+        "PH-E": 7.4,
+        "COND-E": 1060.0,
+        "SS-E": 180.0,
+        "DQO-E": 367.0
+      },
+      "actual": 65.0,
+      "predicted": 56.673658696666195,
+      "risk_probability": 0.24515692948138643,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-29",
+      "inputs": {
+        "PH-E": 7.3,
+        "COND-E": 1260.0,
+        "SS-E": 258.0,
+        "DQO-E": 545.0
+      },
+      "actual": 65.9,
+      "predicted": 61.8267884020466,
+      "risk_probability": 0.07107372072795229,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-08-30",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1073.0,
+        "SS-E": 132.0,
+        "DQO-E": 300.0
+      },
+      "actual": 69.5,
+      "predicted": 53.42891938133448,
+      "risk_probability": 0.43832339980546425,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-01",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 985.0,
+        "SS-E": 194.0,
+        "DQO-E": 258.0
+      },
+      "actual": 59.8,
+      "predicted": 56.6036001602294,
+      "risk_probability": 0.2354275073137418,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-02",
+      "inputs": {
+        "PH-E": 7.5,
+        "COND-E": 1395.0,
+        "SS-E": 230.0,
+        "DQO-E": 351.0
+      },
+      "actual": 67.4,
+      "predicted": 60.17772617149731,
+      "risk_probability": 0.11435957231809653,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-03",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1273.0,
+        "SS-E": 188.0,
+        "DQO-E": 316.0
+      },
+      "actual": 57.8,
+      "predicted": 56.758204595171115,
+      "risk_probability": 0.2325898183487054,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-04",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1198.0,
+        "SS-E": 182.0,
+        "DQO-E": 392.0
+      },
+      "actual": 56.7,
+      "predicted": 55.78575279821223,
+      "risk_probability": 0.26393280902817756,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-06",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1615.0,
+        "SS-E": 204.0,
+        "DQO-E": 318.0
+      },
+      "actual": 68.6,
+      "predicted": 57.43890920136573,
+      "risk_probability": 0.19144750815241082,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-08",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1418.0,
+        "SS-E": 266.0,
+        "DQO-E": 272.0
+      },
+      "actual": 71.0,
+      "predicted": 62.24145652675314,
+      "risk_probability": 0.06884625406248504,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-09",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1344.0,
+        "SS-E": 240.0,
+        "DQO-E": 366.0
+      },
+      "actual": 68.9,
+      "predicted": 58.65884060055799,
+      "risk_probability": 0.1300733977308932,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-11",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1365.0,
+        "SS-E": 366.0,
+        "DQO-E": 424.0
+      },
+      "actual": 71.1,
+      "predicted": 66.25299145440476,
+      "risk_probability": 0.01755398573309757,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-12",
+      "inputs": {
+        "PH-E": 7.9,
+        "COND-E": 1219.0,
+        "SS-E": 226.0,
+        "DQO-E": 332.0
+      },
+      "actual": 71.3,
+      "predicted": 56.96536541421017,
+      "risk_probability": 0.17944386868472278,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-13",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1149.0,
+        "SS-E": 274.0,
+        "DQO-E": 464.0
+      },
+      "actual": 73.9,
+      "predicted": 60.99666509516403,
+      "risk_probability": 0.07351992626169586,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-15",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 875.0,
+        "SS-E": 310.0,
+        "DQO-E": 349.0
+      },
+      "actual": 82.0,
+      "predicted": 61.75615896988683,
+      "risk_probability": 0.05387838609495897,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-16",
+      "inputs": {
+        "PH-E": 8.1,
+        "COND-E": 2210.0,
+        "SS-E": 256.0,
+        "DQO-E": 439.0
+      },
+      "actual": 67.7,
+      "predicted": 59.83480151493818,
+      "risk_probability": 0.09283346625588046,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-17",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1700.0,
+        "SS-E": 262.0,
+        "DQO-E": 457.0
+      },
+      "actual": 72.5,
+      "predicted": 61.21920261967631,
+      "risk_probability": 0.07541151771201354,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-18",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1473.0,
+        "SS-E": 202.0,
+        "DQO-E": 511.0
+      },
+      "actual": 68.8,
+      "predicted": 55.930085381844144,
+      "risk_probability": 0.2206619404695587,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-19",
+      "inputs": {
+        "PH-E": 8.0,
+        "COND-E": 1306.0,
+        "SS-E": 268.0,
+        "DQO-E": 442.0
+      },
+      "actual": 68.2,
+      "predicted": 58.6253819340971,
+      "risk_probability": 0.1055976957410979,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-20",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 2110.0,
+        "SS-E": 252.0,
+        "DQO-E": 489.0
+      },
+      "actual": 67.2,
+      "predicted": 60.96579035861197,
+      "risk_probability": 0.08099863855360721,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-22",
+      "inputs": {
+        "PH-E": 7.8,
+        "COND-E": 1494.0,
+        "SS-E": 142.0,
+        "DQO-E": 296.0
+      },
+      "actual": 57.0,
+      "predicted": 53.353163802869595,
+      "risk_probability": 0.41610761680931896,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-23",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1542.0,
+        "SS-E": 216.0,
+        "DQO-E": 380.0
+      },
+      "actual": 65.8,
+      "predicted": 58.301097303333194,
+      "risk_probability": 0.157170403136923,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-24",
+      "inputs": {
+        "PH-E": 7.9,
+        "COND-E": 1384.0,
+        "SS-E": 184.0,
+        "DQO-E": null
+      },
+      "actual": 59.8,
+      "predicted": 54.461248634868674,
+      "risk_probability": 0.29734793041018287,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-25",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1680.0,
+        "SS-E": 194.0,
+        "DQO-E": 364.0
+      },
+      "actual": 61.3,
+      "predicted": 58.04866402488726,
+      "risk_probability": 0.18618261276563425,
+      "risk_actual": 0
+    },
+    {
+      "date": "1991-10-26",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1445.0,
+        "SS-E": 184.0,
+        "DQO-E": 540.0
+      },
+      "actual": 38.6,
+      "predicted": 55.22418728984984,
+      "risk_probability": 0.26372728662747386,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-10-27",
+      "inputs": {
+        "PH-E": 7.6,
+        "COND-E": 1627.0,
+        "SS-E": 178.0,
+        "DQO-E": 333.0
+      },
+      "actual": 40.4,
+      "predicted": 57.060654980247634,
+      "risk_probability": 0.23326263728370106,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-10-29",
+      "inputs": {
+        "PH-E": 7.7,
+        "COND-E": 1402.0,
+        "SS-E": 136.0,
+        "DQO-E": 400.0
+      },
+      "actual": 40.4,
+      "predicted": 52.82963991581484,
+      "risk_probability": 0.4386702105347029,
+      "risk_actual": 1
+    },
+    {
+      "date": "1991-10-30",
+      "inputs": {
+        "PH-E": 7.9,
+        "COND-E": 1798.0,
+        "SS-E": 204.0,
+        "DQO-E": 478.0
+      },
+      "actual": 43.9,
+      "predicted": 56.50958008732922,
+      "risk_probability": 0.2023169177285512,
+      "risk_actual": 1
+    }
+  ],
+  "risk": {
+    "target": "RD-SS-P below research threshold",
+    "threshold": 50.0,
+    "cutoff": 0.5,
+    "metrics": {
+      "test_rows": 105,
+      "test_events": 16,
+      "predicted_events": 3,
+      "recall": 0.1875,
+      "precision": 1.0,
+      "true_positive": 3,
+      "false_negative": 13
+    },
+    "model": {
+      "type": "logistic-regression",
+      "intercept": -1.6432356920389322,
+      "prior": 0.23684210526315788,
+      "medians": {
+        "PH-E": 7.8,
+        "COND-E": 1428.5,
+        "SS-E": 196.0,
+        "DQO-E": 404.0
+      },
+      "means": {
+        "PH-E": 7.854066985645921,
+        "COND-E": 1504.098086124402,
+        "SS-E": 224.33014354066987,
+        "DQO-E": 411.5598086124402
+      },
+      "scales": {
+        "PH-E": 0.23950749967981247,
+        "COND-E": 403.5631816398574,
+        "SS-E": 104.40130570082357,
+        "DQO-E": 123.74726331887402
+      },
+      "coefficients": {
+        "PH-E": 0.2279461141999705,
+        "COND-E": -0.19665531141198778,
+        "SS-E": -1.7706553618134278,
+        "DQO-E": 0.04853871374969379
+      }
+    }
+  }
+}

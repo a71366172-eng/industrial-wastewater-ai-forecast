@@ -1,0 +1,5 @@
+[
+  { "issued_at": "2026-09-17T08:00:00+08:00", "target_start": "2026-09-17T09:00:00+08:00", "target_end": "2026-09-17T10:00:00+08:00", "predicted_value": 76, "model_version": "demo-baseline-0.1" },
+  { "issued_at": "2026-09-17T08:00:00+08:00", "target_start": "2026-09-17T10:00:00+08:00", "target_end": "2026-09-17T11:00:00+08:00", "predicted_value": 84, "model_version": "demo-baseline-0.1" },
+  { "issued_at": "2026-09-17T08:00:00+08:00", "target_start": "2026-09-17T11:00:00+08:00", "target_end": "2026-09-17T12:00:00+08:00", "predicted_value": 94, "model_version": "demo-baseline-0.1" }
+]
