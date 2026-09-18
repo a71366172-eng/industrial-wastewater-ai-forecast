@@ -15,8 +15,20 @@ def _without_generated_at(artifact: dict) -> dict:
     return {key: value for key, value in artifact.items() if key != "generated_at"}
 
 
+def _values_match(expected, actual) -> bool:
+    if isinstance(expected, bool) or isinstance(actual, bool):
+        return expected is actual
+    if isinstance(expected, (int, float)) and isinstance(actual, (int, float)):
+        return abs(float(expected) - float(actual)) <= 1e-10 * max(1.0, abs(float(expected)), abs(float(actual)))
+    if isinstance(expected, dict) and isinstance(actual, dict):
+        return expected.keys() == actual.keys() and all(_values_match(expected[key], actual[key]) for key in expected)
+    if isinstance(expected, list) and isinstance(actual, list):
+        return len(expected) == len(actual) and all(_values_match(left, right) for left, right in zip(expected, actual))
+    return expected == actual
+
+
 def artifacts_match(expected: dict, actual: dict) -> bool:
-    return _without_generated_at(expected) == _without_generated_at(actual)
+    return _values_match(_without_generated_at(expected), _without_generated_at(actual))
 
 
 def main() -> int:

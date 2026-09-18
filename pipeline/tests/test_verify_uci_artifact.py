@@ -10,6 +10,11 @@ class ArtifactVerificationTests(unittest.TestCase):
 
         self.assertTrue(artifacts_match(expected, actual))
 
+    def test_tiny_cross_platform_float_difference_is_accepted(self):
+        expected = {"generated_at": "a", "model": {"coefficient": 1.000000000001}, "values": [2.0]}
+        actual = {"generated_at": "b", "model": {"coefficient": 1.000000000002}, "values": [2.000000000001]}
+
+        self.assertTrue(artifacts_match(expected, actual))
     def test_model_change_is_detected(self):
         expected = {"generated_at": "a", "model": {"alpha": 1}}
         actual = {"generated_at": "b", "model": {"alpha": 10}}
