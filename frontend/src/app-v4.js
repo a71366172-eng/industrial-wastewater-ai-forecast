@@ -94,7 +94,7 @@ function shell() {
         <div class="source-grid">
           <article><span>法規</span><h2 id="source-law-title">—</h2><p>pH、SS、COD 限值由版本化設定檔載入。個案許可、地方加嚴、環評或總量管制較嚴時必須覆寫。</p><a id="source-law-link" target="_blank" rel="noreferrer">官方附表四 ↗</a></article>
           <article><span>公開模型資料</span><h2>UCI Water Treatment Plant</h2><p>1990–1991 西班牙都市污水歷史資料，只用於驗證資料管線與建模方法，不代表臺灣化工廠。</p></article>
-          <article><span>臺灣公開申報資料</span><h2>環境部 EMS_S_03</h2><p>可補充放流口、承受水體、排放量與申報濃度；時間粒度不足以單獨訓練逐時提前預報。</p><a href="https://data.moenv.gov.tw/dataset/detail/EMS_S_03" target="_blank" rel="noreferrer">查看資料集 ↗</a></article>
+          <article><span>臺灣公開申報資料</span><h2>環境部 EMS_S_03</h2><p>API 與官方 CSV 匯入工具已就緒，可補充放流口、承受水體、排放量與申報濃度；時間粒度不足以單獨訓練逐時提前預報。</p><a href="https://data.moenv.gov.tw/dataset/detail/EMS_S_03" target="_blank" rel="noreferrer">查看資料集 ↗</a></article>
           <article><span>實廠資料入口</span><h2>化工廠訓練資料範本</h2><p>已定義進出水、流量、投藥、曝氣、污泥與品質旗標欄位。正式模型應以實廠時序資料重新訓練。</p><a href="public/data/templates/chemical_plant_training_template.csv">下載 CSV 範本 ↓</a></article>
         </div>
       </section>

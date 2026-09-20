@@ -82,3 +82,27 @@ GitHub 儲存庫建立後，將 Pages 的 Source 設為 GitHub Actions。本專�
 ## 雲端同步
 
 Windows 排程「化工AI專案雲端同步」每 10 分鐘將 D: 工作目錄的新增或變更檔案備份至 Google Drive 原專案位置。同步不傳播刪除，以避免本機誤刪同步到雲端。
+
+## 環境部 EMS_S_03 真實申報資料
+
+官方資料頁：<https://data.moenv.gov.tw/dataset/detail/EMS_S_03>
+
+API 模式需先在環境部平臺註冊取得 API Key。金鑰只透過環境變數傳入：
+
+~~~powershell
+$env:MOENV_API_KEY = '你的金鑰'
+py -3 fetch_moenv_ems.py
+~~~
+
+也可以從官方頁面手動下載 CSV 後匯入：
+
+~~~powershell
+py -3 import_moenv_csv.py .\path\to\EMS_S_03.csv
+~~~
+
+兩種模式都會：
+
+- 將含事業識別資訊的正規化原始資料寫入被 Git 排除的 data/raw/moenv/。
+- 只將 COD、SS、pH 的筆數、最小值、中位數、P90 與最大值寫入前端公開摘要。
+- 明確標記資料時間粒度為 reporting_period，不把申報資料當成逐時感測資料。
+- 不公開事業名稱、地址、統編、許可證號或管制編號。
