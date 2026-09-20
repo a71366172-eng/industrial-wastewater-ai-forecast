@@ -76,3 +76,13 @@ test('monitoring cadence follows the official automatic monitoring profile', () 
   assert.match(app, /monitoring-profile\.json/);
   assert.match(app, /未來 1 小時/);
 });
+test('multi-horizon model status exposes honest data gates', () => {
+  const status = JSON.parse(readFileSync('frontend/public/data/multihorizon-model-status.json', 'utf8'));
+  assert.deepEqual(status.horizonsHours, [1, 3, 6]);
+  assert.equal(status.status, 'awaiting_high_frequency_data');
+  assert.equal(status.minimumDataGate.hourlyRows, 2160);
+  assert.equal(status.reinforcementLearning.status, 'deferred');
+  const app = readFileSync('frontend/src/app-v4.js', 'utf8');
+  assert.match(app, /multihorizon-model-status\.json/);
+  assert.match(app, /1／3／6 小時/);
+});

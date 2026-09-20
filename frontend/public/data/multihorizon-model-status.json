@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "awaiting_high_frequency_data",
+  "horizonsHours": [1, 3, 6],
+  "target": "future_any_COD_or_SS_reference_exceedance",
+  "model": "leakage_safe_logistic_baseline_with_lag_features",
+  "minimumDataGate": {
+    "hourlyRows": 2160,
+    "months": 3,
+    "minimumEventsPerHorizon": 30,
+    "requiredMetrics": ["brier_score", "baseline_brier_score", "recall", "precision"]
+  },
+  "implemented": [
+    "future-window labels for 1, 3 and 6 hours",
+    "current, one-hour delta and six-hour rolling mean features",
+    "chronological 60/20/20 split",
+    "Brier score and event recall evaluation",
+    "browser-readable model export"
+  ],
+  "reinforcementLearning": {
+    "status": "deferred",
+    "condition": "safe process simulator or offline policy evaluation dataset required"
+  }
+}

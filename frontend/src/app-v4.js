@@ -107,6 +107,7 @@ function shell() {
       <section class="page" data-page="models">
         <header class="section-heading"><p class="eyebrow">MODEL GATE</p><h1>先贏過簡單基準，才談部署</h1><p>公開資料以時間順序切分；最後 20% 只用於測試。</p></header>
         <div id="model-cards" class="model-grid"></div>
+        <article class="multihorizon-card"><div><span>MULTI-HORIZON RISK</span><b id="multihorizon-state">載入中</b></div><h2>未來 1／3／6 小時超標機率</h2><div id="multihorizon-horizons" class="horizon-grid"></div><dl id="multihorizon-gates"></dl><p id="multihorizon-note"></p></article>
         <article class="gate-note"><h2>目前部署結論</h2><p>COD-S 僅小幅優於基準，仍需臺灣化工廠外部驗證；SS-S 未優於基準，禁止標成可部署。兩者都不能作為正式合規證明。</p></article>
       </section>
 
@@ -150,6 +151,12 @@ function renderLimit(prefix, value, limit, assessment, deployment) {
   document.querySelector(`#${prefix}-model-state`).innerHTML = `<b>${deployment.label}</b> · ${deployment.detail}`;
 }
 
+function renderMultihorizonStatus(status) {
+  document.querySelector('#multihorizon-state').textContent = status.status === 'awaiting_high_frequency_data' ? '等待高頻資料' : '研究模型已產生';
+  document.querySelector('#multihorizon-horizons').innerHTML = status.horizonsHours.map((hours) => `<div><strong>${hours}</strong><span>小時超標機率</span></div>`).join('');
+  document.querySelector('#multihorizon-gates').innerHTML = `<div><dt>最低逐時資料</dt><dd>${status.minimumDataGate.hourlyRows.toLocaleString('zh-TW')} 筆</dd></div><div><dt>最低期間</dt><dd>${status.minimumDataGate.months} 個月</dd></div><div><dt>每時距超標事件</dt><dd>至少 ${status.minimumDataGate.minimumEventsPerHorizon} 次</dd></div>`;
+  document.querySelector('#multihorizon-note').textContent = '標籤、滯後特徵、時間切分與訓練程式已完成；目前沒有合格高頻資料，因此不顯示虛假分數。強化學習延後至安全模擬器或離線策略資料完成後。';
+}
 function renderModelCards(artifact) {
   document.querySelector('#model-cards').innerHTML = Object.values(artifact.models).map((model) => {
     const deployment = modelDeploymentState(model);
@@ -314,17 +321,19 @@ function renderMoenvSummary(summary) {
 async function boot() {
   shell();
   try {
-    const [modelResponse, profileResponse, moenvResponse, monitoringResponse] = await Promise.all([
+    const [modelResponse, profileResponse, moenvResponse, monitoringResponse, multihorizonResponse] = await Promise.all([
       fetch('public/data/effluent-model-v4.json'),
       fetch('public/data/legal-profiles.json'),
       fetch('public/data/moenv-ems-summary.json'),
-      fetch('public/data/monitoring-profile.json')
+      fetch('public/data/monitoring-profile.json'),
+      fetch('public/data/multihorizon-model-status.json')
     ]);
-    if (!modelResponse.ok || !profileResponse.ok || !moenvResponse.ok || !monitoringResponse.ok) throw new Error('模型、法規或資料設定無法載入');
+    if (!modelResponse.ok || !profileResponse.ok || !moenvResponse.ok || !monitoringResponse.ok || !multihorizonResponse.ok) throw new Error('模型、法規或資料設定無法載入');
     const artifact = await modelResponse.json();
     const profiles = await profileResponse.json();
     const moenvSummary = await moenvResponse.json();
     const monitoringProfile = await monitoringResponse.json();
+    const multihorizonStatus = await multihorizonResponse.json();
     const profile = profiles.profiles[0];
     const inputs = defaultInputs(artifact.models);
     const result = calculate(artifact.models, profile, inputs);
@@ -341,6 +350,7 @@ async function boot() {
     renderLimit('ss', result.ss, profile.limits.ss.max, result.ssAssessment, modelDeploymentState(artifact.models['SS-S']));
     renderLimit('cod', result.cod, profile.limits.cod.max, result.codAssessment, modelDeploymentState(artifact.models['DQO-S']));
     renderModelCards(artifact);
+    renderMultihorizonStatus(multihorizonStatus);
     renderMonitoringProfile(monitoringProfile);
     renderMoenvSummary(moenvSummary);
     renderValidationTrend(artifact.models, profile);
