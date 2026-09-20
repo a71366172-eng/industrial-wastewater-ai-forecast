@@ -32,6 +32,9 @@ test('effluent artifact cannot advertise production deployment', () => {
   assert.equal(data.deploymentStatus, 'research_only');
   assert.equal(data.models['SS-S'].metrics.beatsBaseline, false);
   assert.equal(data.models['DQO-S'].metrics.beatsBaseline, true);
+  assert.ok(data.models['SS-S'].testSeries.length > 20);
+  assert.ok(data.models['DQO-S'].testSeries.length > 20);
+  assert.deepEqual(Object.keys(data.models['DQO-S'].testSeries[0]), ['date', 'actual', 'predicted']);
 });
 
 test('MOENV public summary is anonymized and loaded by the source page', () => {
@@ -56,4 +59,8 @@ test('MOENV public summary is anonymized and loaded by the source page', () => {
   assert.match(app, /data-trend-param/);
   assert.match(app, /超過參考限值機率/);
   assert.match(app, /forecast-cod-probability/);
+  assert.match(app, /data-page="trends"/);
+  assert.match(app, /validation-trend-chart/);
+  assert.match(app, /實際值/);
+  assert.match(app, /預測值/);
 });

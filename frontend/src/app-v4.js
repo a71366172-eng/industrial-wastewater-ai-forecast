@@ -21,6 +21,7 @@ function shell() {
       <nav aria-label="主要功能">
         <button data-page-link="overview">法規總覽</button>
         <button data-page-link="forecast">進水預報</button>
+        <button data-page-link="trends">趨勢預測</button>
         <button data-page-link="models">模型成效</button>
         <button data-page-link="sources">資料與法規</button>
       </nav>
@@ -88,6 +89,20 @@ function shell() {
         </div>
       </section>
 
+      <section class="page" data-page="trends">
+        <header class="section-heading"><p class="eyebrow">TRENDS & PREDICTIONS</p><h1>趨勢與 AI 預測折線</h1><p>上圖呈現臺灣公開申報期間趨勢；下圖呈現模型保留測試集的實際值與預測值。兩種資料來源不同，不直接串成同一條時間線。</p></header>
+        <article class="trend-panel">
+          <div class="trend-header"><div><span>臺灣申報期間趨勢</span><h2>匿名水質中位數</h2></div><div class="trend-controls" aria-label="選擇申報趨勢測項"><button type="button" data-trend-param="COD">COD</button><button type="button" data-trend-param="SS">SS</button><button type="button" data-trend-param="pH">pH</button></div></div>
+          <div id="moenv-trend-chart" class="trend-chart" role="img" aria-label="環境部申報資料期間趨勢折線圖"></div>
+          <p id="moenv-trend-note" class="trend-note"></p>
+        </article>
+        <article class="trend-panel validation-panel">
+          <div class="trend-header"><div><span>AI 保留測試集</span><h2>實際值 vs 預測值</h2></div><div class="trend-controls" aria-label="選擇預測測項"><button type="button" data-validation-target="DQO-S">COD</button><button type="button" data-validation-target="SS-S">SS</button></div></div>
+          <div class="chart-legend"><span class="actual">實際值</span><span class="predicted">預測值</span><span class="reference">化工業參考限值</span></div>
+          <div id="validation-trend-chart" class="trend-chart" role="img" aria-label="保留測試集實際值與預測值折線圖"></div>
+          <p id="validation-trend-note" class="trend-note"></p>
+        </article>
+      </section>
       <section class="page" data-page="models">
         <header class="section-heading"><p class="eyebrow">MODEL GATE</p><h1>先贏過簡單基準，才談部署</h1><p>公開資料以時間順序切分；最後 20% 只用於測試。</p></header>
         <div id="model-cards" class="model-grid"></div>
@@ -102,11 +117,7 @@ function shell() {
           <article><span>臺灣真實申報資料</span><h2>環境部 EMS_S_03</h2><p id="moenv-summary-note">正在載入匿名統計摘要…</p><dl id="moenv-stats" class="source-stats"></dl><h3 class="benchmark-title">化工業中央基準情境</h3><div id="moenv-benchmark" class="benchmark-grid"></div><p id="moenv-benchmark-caveat" class="benchmark-caveat"></p><small id="moenv-generated"></small><a href="https://data.moenv.gov.tw/dataset/detail/EMS_S_03" target="_blank" rel="noreferrer">查看資料集 ↗</a></article>
           <article><span>實廠資料入口</span><h2>化工廠訓練資料範本</h2><p>已定義進出水、流量、投藥、曝氣、污泥與品質旗標欄位。正式模型應以實廠時序資料重新訓練。</p><a href="public/data/templates/chemical_plant_training_template.csv">下載 CSV 範本 ↓</a></article>
         </div>
-        <article class="trend-panel">
-          <div class="trend-header"><div><span>申報期間趨勢</span><h2>匿名水質中位數</h2></div><div class="trend-controls" aria-label="選擇趨勢測項"><button type="button" data-trend-param="COD">COD</button><button type="button" data-trend-param="SS">SS</button><button type="button" data-trend-param="pH">pH</button></div></div>
-          <div id="moenv-trend-chart" class="trend-chart" role="img" aria-label="環境部申報資料期間趨勢圖"></div>
-          <p id="moenv-trend-note" class="trend-note"></p>
-        </article>
+
       </section>
     </main>
     <footer><span>放流前哨 · 化工業放流水預警研究系統</span><span id="artifact-time">模型產物載入中</span></footer>
@@ -114,7 +125,7 @@ function shell() {
 }
 
 function showPage(name) {
-  const valid = ['overview', 'forecast', 'models', 'sources'];
+  const valid = ['overview', 'forecast', 'trends', 'models', 'sources'];
   const page = valid.includes(name) ? name : 'overview';
   document.querySelectorAll('.page').forEach((node) => node.classList.toggle('active', node.dataset.page === page));
   document.querySelectorAll('[data-page-link]').forEach((node) => node.classList.toggle('active', node.dataset.pageLink === page));
@@ -246,6 +257,32 @@ function renderMoenvTrend(summary, parameter = 'COD') {
   document.querySelector('#moenv-trend-note').textContent = `${parameter} 共 ${points.length} 個申報期；圓點可查看該期樣本數。各期樣本數差異大，且資料混合不同業別，因此趨勢只供資料探索。`;
   document.querySelectorAll('[data-trend-param]').forEach((button) => button.classList.toggle('active', button.dataset.trendParam === parameter));
 }
+function renderValidationTrend(models, profile, target = 'DQO-S') {
+  const model = models[target];
+  const points = model?.testSeries || [];
+  const chart = document.querySelector('#validation-trend-chart');
+  if (!points.length) {
+    chart.textContent = '此模型沒有可用的保留測試序列。';
+    return;
+  }
+  const width = 920;
+  const height = 330;
+  const margin = { left: 58, right: 24, top: 24, bottom: 54 };
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+  const limit = target === 'DQO-S' ? profile.limits.cod.max : profile.limits.ss.max;
+  const values = points.flatMap((point) => [point.actual, point.predicted, limit]);
+  const yMax = Math.max(...values) * 1.08 || 1;
+  const x = (index) => margin.left + (points.length === 1 ? plotWidth / 2 : index * plotWidth / (points.length - 1));
+  const y = (value) => margin.top + plotHeight - (Math.max(0, value) / yMax) * plotHeight;
+  const pathFor = (field) => points.map((point, index) => `${index ? 'L' : 'M'} ${x(index).toFixed(1)} ${y(point[field]).toFixed(1)}`).join(' ');
+  const labelIndexes = [...new Set([0, Math.floor((points.length - 1) / 3), Math.floor((points.length - 1) * 2 / 3), points.length - 1])];
+  const labels = labelIndexes.map((index) => `<text x="${x(index)}" y="${height - 24}" text-anchor="middle" class="trend-axis-label">${points[index].date.slice(5)}</text>`).join('');
+  chart.innerHTML = `<svg viewBox="0 0 ${width} ${height}" aria-labelledby="validation-title"><title id="validation-title">${target === 'DQO-S' ? 'COD' : 'SS'} 保留測試集實際值與預測值</title><line x1="${margin.left}" y1="${margin.top + plotHeight}" x2="${width - margin.right}" y2="${margin.top + plotHeight}" class="trend-axis"/><line x1="${margin.left}" y1="${y(limit)}" x2="${width - margin.right}" y2="${y(limit)}" class="trend-reference"/><text x="${width - margin.right}" y="${y(limit) - 6}" text-anchor="end" class="trend-reference-label">參考限值 ${format(limit)}</text><path d="${pathFor('actual')}" class="validation-line-actual"/><path d="${pathFor('predicted')}" class="validation-line-predicted"/>${labels}</svg>`;
+  const deployment = modelDeploymentState(model);
+  document.querySelector('#validation-trend-note').textContent = `${target === 'DQO-S' ? 'COD' : 'SS'} 共 ${points.length} 筆時間後段保留測試資料；MAE ${format(model.metrics.mae, 2)} mg/L。${deployment.ready ? '模型優於簡單基準，仍需臺灣化工廠驗證。' : '模型未優於簡單基準，折線只呈現研究結果。'}`;
+  document.querySelectorAll('[data-validation-target]').forEach((button) => button.classList.toggle('active', button.dataset.validationTarget === target));
+}
 function renderMoenvSummary(summary) {
   const labels = { COD: 'COD', SS: 'SS', pH: 'pH' };
   const rows = Object.entries(labels).map(([key, label]) => {
@@ -294,9 +331,13 @@ async function boot() {
     renderLimit('cod', result.cod, profile.limits.cod.max, result.codAssessment, modelDeploymentState(artifact.models['DQO-S']));
     renderModelCards(artifact);
     renderMoenvSummary(moenvSummary);
+    renderValidationTrend(artifact.models, profile);
     renderFields(artifact.models, inputs);
     renderForecast(result);
 
+    document.querySelectorAll('[data-validation-target]').forEach((button) => {
+      button.addEventListener('click', () => renderValidationTrend(artifact.models, profile, button.dataset.validationTarget));
+    });
     document.querySelectorAll('[data-trend-param]').forEach((button) => {
       button.addEventListener('click', () => renderMoenvTrend(moenvSummary, button.dataset.trendParam));
     });

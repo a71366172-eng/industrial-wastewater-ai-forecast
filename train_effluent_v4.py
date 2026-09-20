@@ -100,8 +100,18 @@ def train_target(rows: list[dict[str, float | str]], target: str, alpha: float =
     metrics = _metrics(y_test, predicted, np.full_like(y_test, baseline_value))
     residuals = np.sort(y_test - predicted)
 
+    test_series = [
+        {
+            "date": parse_date(str(row["DATE"])).date().isoformat(),
+            "actual": float(actual),
+            "predicted": float(estimate),
+        }
+        for row, actual, estimate in zip(test, y_test, predicted)
+    ]
+
     return {
         "target": target,
+        "testSeries": test_series,
         "features": FEATURES,
         "rows": {"total": len(usable), "train": len(train), "test": len(test)},
         "dateRange": {"first": usable[0]["DATE"], "last": usable[-1]["DATE"]},
