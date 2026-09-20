@@ -98,6 +98,7 @@ def train_target(rows: list[dict[str, float | str]], target: str, alpha: float =
     predicted = target_mean + standardized_test @ coefficients
     baseline_value = float(np.median(y_train))
     metrics = _metrics(y_test, predicted, np.full_like(y_test, baseline_value))
+    residuals = np.sort(y_test - predicted)
 
     return {
         "target": target,
@@ -106,6 +107,13 @@ def train_target(rows: list[dict[str, float | str]], target: str, alpha: float =
         "dateRange": {"first": usable[0]["DATE"], "last": usable[-1]["DATE"]},
         "split": "chronological first 80% train / last 20% test",
         "metrics": metrics,
+        "uncertainty": {
+            "method": "held-out empirical residual distribution",
+            "interval": "central 80 percent",
+            "testResiduals": residuals.tolist(),
+            "sampleCount": len(residuals),
+            "limitations": "Research estimate; not a calibrated regulatory exceedance probability",
+        },
         "parameters": {
             "featureMedians": medians.tolist(),
             "featureMeans": means.tolist(),
@@ -124,7 +132,7 @@ def main() -> None:
     args = parser.parse_args()
     rows = load_rows(args.input)
     artifact = {
-        "schemaVersion": "1.0.0",
+        "schemaVersion": "1.1.0",
         "createdAt": datetime.now(timezone.utc).isoformat(),
         "modelType": "numpy-ridge-regression-prototype",
         "deploymentStatus": "research_only",

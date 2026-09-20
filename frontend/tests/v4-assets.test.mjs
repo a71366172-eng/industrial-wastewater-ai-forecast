@@ -54,4 +54,6 @@ test('MOENV public summary is anonymized and loaded by the source page', () => {
   assert.match(app, /不是個別事業合規率/);
   assert.match(app, /moenv-trend-chart/);
   assert.match(app, /data-trend-param/);
+  assert.match(app, /超過參考限值機率/);
+  assert.match(app, /forecast-cod-probability/);
 });

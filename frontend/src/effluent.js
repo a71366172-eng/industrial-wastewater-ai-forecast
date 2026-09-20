@@ -27,6 +27,31 @@ export function validateEffluentInputs(inputs) {
   return { ok: !missingFields.length && !invalidFields.length, missing: missingFields, invalid: invalidFields };
 }
 
+function empiricalQuantile(values, fraction) {
+  const ordered = [...values].sort((a, b) => a - b);
+  const position = (ordered.length - 1) * fraction;
+  const lower = Math.floor(position);
+  const upper = Math.min(lower + 1, ordered.length - 1);
+  const weight = position - lower;
+  return ordered[lower] * (1 - weight) + ordered[upper] * weight;
+}
+
+export function estimateExceedanceRisk(model, predicted, limit) {
+  const residuals = model?.uncertainty?.testResiduals?.map(Number).filter(Number.isFinite) || [];
+  if (!residuals.length || missing(predicted) || missing(limit)) return null;
+  const center = Number(predicted);
+  const threshold = Number(limit);
+  const lower = center + empiricalQuantile(residuals, 0.1);
+  const upper = center + empiricalQuantile(residuals, 0.9);
+  const exceedances = residuals.filter((residual) => center + residual > threshold).length;
+  return {
+    probability: exceedances / residuals.length,
+    lower,
+    upper,
+    sampleCount: residuals.length,
+    method: 'held_out_empirical_residuals'
+  };
+}
 export function assessMaximum(value, limit, warningRatio = 0.8) {
   if (missing(value) || missing(limit) || Number(limit) <= 0) {
     return { status: 'unassessed', margin: null, ratio: null, label: '尚未評估' };

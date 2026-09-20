@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
   assessMaximum,
   assessRange,
+  estimateExceedanceRisk,
   modelDeploymentState,
   predictEffluent
 } from '../src/effluent.js';
@@ -53,4 +54,16 @@ test('pH without a prediction remains unassessed', () => {
 test('a model that loses to baseline cannot be deployment ready', () => {
   assert.equal(modelDeploymentState({ metrics: { beatsBaseline: false } }).ready, false);
   assert.equal(modelDeploymentState(model).ready, true);
+});
+test('estimates an empirical interval and limit exceedance probability from held-out residuals', () => {
+  const uncertainModel = { uncertainty: { testResiduals: [-10, 0, 10, 20] } };
+  const result = estimateExceedanceRisk(uncertainModel, 90, 100);
+  assert.equal(result.sampleCount, 4);
+  assert.equal(result.probability, 0.25);
+  assert.equal(result.lower, 83);
+  assert.equal(result.upper, 107);
+});
+
+test('does not invent probability when held-out residuals are unavailable', () => {
+  assert.equal(estimateExceedanceRisk({}, 90, 100), null);
 });

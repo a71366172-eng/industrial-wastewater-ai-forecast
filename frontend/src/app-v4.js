@@ -1,5 +1,6 @@
 import {
   assessMaximum,
+  estimateExceedanceRisk,
   modelDeploymentState,
   predictEffluent,
   validateEffluentInputs
@@ -77,6 +78,10 @@ function shell() {
             <div class="forecast-pair">
               <article><span>放流水 SS</span><strong id="forecast-ss">—</strong><small>mg/L</small><b id="forecast-ss-status">—</b></article>
               <article><span>放流水 COD</span><strong id="forecast-cod">—</strong><small>mg/L</small><b id="forecast-cod-status">—</b></article>
+            </div>
+            <div class="probability-grid">
+              <article><div><span>SS 超過參考限值機率</span><strong id="forecast-ss-probability">—</strong></div><div class="probability-track"><i id="forecast-ss-probability-bar"></i></div><p id="forecast-ss-interval">80% 預測區間：—</p><small id="forecast-ss-confidence">等待模型殘差。</small></article>
+              <article><div><span>COD 超過參考限值機率</span><strong id="forecast-cod-probability">—</strong></div><div class="probability-track"><i id="forecast-cod-probability-bar"></i></div><p id="forecast-cod-interval">80% 預測區間：—</p><small id="forecast-cod-confidence">等待模型殘差。</small></article>
             </div>
             <div class="decision-note"><b>操作說明</b><p id="forecast-note">等待輸入。</p></div>
           </div>
@@ -164,10 +169,33 @@ function calculate(models, profile, inputs) {
     ss,
     cod,
     ssAssessment: assessMaximum(ss, profile.limits.ss.max),
-    codAssessment: assessMaximum(cod, profile.limits.cod.max)
+    codAssessment: assessMaximum(cod, profile.limits.cod.max),
+    ssRisk: estimateExceedanceRisk(models['SS-S'], ss, profile.limits.ss.max),
+    codRisk: estimateExceedanceRisk(models['DQO-S'], cod, profile.limits.cod.max),
+    ssDeployment: modelDeploymentState(models['SS-S']),
+    codDeployment: modelDeploymentState(models['DQO-S'])
   };
 }
 
+function renderProbability(prefix, risk, deployment) {
+  const probability = document.querySelector(`#forecast-${prefix}-probability`);
+  const bar = document.querySelector(`#forecast-${prefix}-probability-bar`);
+  const interval = document.querySelector(`#forecast-${prefix}-interval`);
+  const confidence = document.querySelector(`#forecast-${prefix}-confidence`);
+  if (!risk) {
+    probability.textContent = '—';
+    bar.style.width = '0%';
+    interval.textContent = '80% 預測區間：無法估計';
+    confidence.textContent = '缺少保留測試殘差，未產生機率。';
+    return;
+  }
+  const percent = risk.probability * 100;
+  probability.textContent = `${format(percent, 1)}%`;
+  bar.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+  bar.className = percent >= 50 ? 'high' : percent >= 20 ? 'medium' : 'low';
+  interval.textContent = `80% 預測區間：${format(Math.max(0, risk.lower))}–${format(Math.max(0, risk.upper))} mg/L`;
+  confidence.textContent = `依 ${risk.sampleCount} 筆保留測試殘差估計 · ${deployment.ready ? '已優於簡單基準，仍需外部驗證' : '模型未優於簡單基準，機率僅供研究'}`;
+}
 function renderForecast(result) {
   document.querySelector('#forecast-ss').textContent = format(result.ss);
   document.querySelector('#forecast-cod').textContent = format(result.cod);
@@ -177,6 +205,8 @@ function renderForecast(result) {
   codStatus.textContent = result.codAssessment.label;
   ssStatus.className = statusClass(result.ssAssessment.status);
   codStatus.className = statusClass(result.codAssessment.status);
+  renderProbability('ss', result.ssRisk, result.ssDeployment);
+  renderProbability('cod', result.codRisk, result.codDeployment);
   const worst = [result.ssAssessment, result.codAssessment].sort((a, b) => (b.ratio ?? 0) - (a.ratio ?? 0))[0];
   document.querySelector('#forecast-note').textContent = worst.status === 'exceeds'
     ? '預測結果超出所選中央基準，應優先複測放流水並檢查處理單元。'
