@@ -94,9 +94,14 @@ function shell() {
         <div class="source-grid">
           <article><span>法規</span><h2 id="source-law-title">—</h2><p>pH、SS、COD 限值由版本化設定檔載入。個案許可、地方加嚴、環評或總量管制較嚴時必須覆寫。</p><a id="source-law-link" target="_blank" rel="noreferrer">官方附表四 ↗</a></article>
           <article><span>公開模型資料</span><h2>UCI Water Treatment Plant</h2><p>1990–1991 西班牙都市污水歷史資料，只用於驗證資料管線與建模方法，不代表臺灣化工廠。</p></article>
-          <article><span>臺灣真實申報資料</span><h2>環境部 EMS_S_03</h2><p id="moenv-summary-note">正在載入匿名統計摘要…</p><dl id="moenv-stats" class="source-stats"></dl><small id="moenv-generated"></small><a href="https://data.moenv.gov.tw/dataset/detail/EMS_S_03" target="_blank" rel="noreferrer">查看資料集 ↗</a></article>
+          <article><span>臺灣真實申報資料</span><h2>環境部 EMS_S_03</h2><p id="moenv-summary-note">正在載入匿名統計摘要…</p><dl id="moenv-stats" class="source-stats"></dl><h3 class="benchmark-title">化工業中央基準情境</h3><div id="moenv-benchmark" class="benchmark-grid"></div><p id="moenv-benchmark-caveat" class="benchmark-caveat"></p><small id="moenv-generated"></small><a href="https://data.moenv.gov.tw/dataset/detail/EMS_S_03" target="_blank" rel="noreferrer">查看資料集 ↗</a></article>
           <article><span>實廠資料入口</span><h2>化工廠訓練資料範本</h2><p>已定義進出水、流量、投藥、曝氣、污泥與品質旗標欄位。正式模型應以實廠時序資料重新訓練。</p><a href="public/data/templates/chemical_plant_training_template.csv">下載 CSV 範本 ↓</a></article>
         </div>
+        <article class="trend-panel">
+          <div class="trend-header"><div><span>申報期間趨勢</span><h2>匿名水質中位數</h2></div><div class="trend-controls" aria-label="選擇趨勢測項"><button type="button" data-trend-param="COD">COD</button><button type="button" data-trend-param="SS">SS</button><button type="button" data-trend-param="pH">pH</button></div></div>
+          <div id="moenv-trend-chart" class="trend-chart" role="img" aria-label="環境部申報資料期間趨勢圖"></div>
+          <p id="moenv-trend-note" class="trend-note"></p>
+        </article>
       </section>
     </main>
     <footer><span>放流前哨 · 化工業放流水預警研究系統</span><span id="artifact-time">模型產物載入中</span></footer>
@@ -180,6 +185,37 @@ function renderForecast(result) {
       : '預測值低於所選中央基準；仍須依許可條件及實際檢驗結果判讀。';
 }
 
+function renderMoenvTrend(summary, parameter = 'COD') {
+  const points = summary.period_trends?.[parameter] || [];
+  const chart = document.querySelector('#moenv-trend-chart');
+  if (!points.length) {
+    chart.textContent = '此測項沒有可用的期間資料。';
+    return;
+  }
+  const width = 820;
+  const height = 300;
+  const margin = { left: 58, right: 24, top: 26, bottom: 56 };
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+  const reference = summary.reference_scenario.parameters[parameter];
+  const referenceValues = parameter === 'pH' ? [reference.minimum, reference.maximum] : [reference.maximum];
+  const values = points.map((point) => point.median);
+  const yMin = parameter === 'pH' ? Math.min(0, ...values, ...referenceValues) : 0;
+  const yMax = Math.max(...values, ...referenceValues) * 1.12 || 1;
+  const x = (index) => margin.left + (points.length === 1 ? plotWidth / 2 : index * plotWidth / (points.length - 1));
+  const y = (value) => margin.top + plotHeight - ((value - yMin) / (yMax - yMin)) * plotHeight;
+  const line = points.map((point, index) => `${index ? 'L' : 'M'} ${x(index).toFixed(1)} ${y(point.median).toFixed(1)}`).join(' ');
+  const rangeBand = parameter === 'pH'
+    ? `<rect x="${margin.left}" y="${y(reference.maximum)}" width="${plotWidth}" height="${y(reference.minimum) - y(reference.maximum)}" class="trend-band" />`
+    : '';
+  const referenceLines = referenceValues.map((value) => `<g><line x1="${margin.left}" y1="${y(value)}" x2="${width - margin.right}" y2="${y(value)}" class="trend-reference"/><text x="${width - margin.right}" y="${y(value) - 6}" text-anchor="end" class="trend-reference-label">參考 ${format(value)}</text></g>`).join('');
+  const circles = points.map((point, index) => `<circle cx="${x(index)}" cy="${y(point.median)}" r="5"><title>${point.period}｜中位 ${format(point.median)}｜n=${point.count}</title></circle>`).join('');
+  const labels = points.map((point, index) => `<text x="${x(index)}" y="${height - 25}" text-anchor="middle" class="trend-axis-label">${point.period.slice(2, 7)}</text>`).join('');
+  const unit = parameter === 'pH' ? 'pH' : 'mg/L';
+  chart.innerHTML = `<svg viewBox="0 0 ${width} ${height}" aria-labelledby="trend-title"><title id="trend-title">${parameter} 各申報期中位數趨勢</title>${rangeBand}<line x1="${margin.left}" y1="${margin.top + plotHeight}" x2="${width - margin.right}" y2="${margin.top + plotHeight}" class="trend-axis"/>${referenceLines}<path d="${line}" class="trend-line"/>${circles}${labels}<text x="${margin.left}" y="16" class="trend-unit">${parameter} 中位數（${unit}）</text></svg>`;
+  document.querySelector('#moenv-trend-note').textContent = `${parameter} 共 ${points.length} 個申報期；圓點可查看該期樣本數。各期樣本數差異大，且資料混合不同業別，因此趨勢只供資料探索。`;
+  document.querySelectorAll('[data-trend-param]').forEach((button) => button.classList.toggle('active', button.dataset.trendParam === parameter));
+}
 function renderMoenvSummary(summary) {
   const labels = { COD: 'COD', SS: 'SS', pH: 'pH' };
   const rows = Object.entries(labels).map(([key, label]) => {
@@ -189,6 +225,13 @@ function renderMoenvSummary(summary) {
     return `<div><dt>${label}（n=${item.count.toLocaleString('zh-TW')}）</dt><dd>中位 ${format(item.median)} ${unit} · P90 ${format(item.p90)} ${unit}</dd></div>`;
   }).join('');
   document.querySelector('#moenv-stats').innerHTML = rows;
+  const scenario = summary.reference_scenario;
+  document.querySelector('#moenv-benchmark').innerHTML = Object.entries(labels).map(([key, label]) => {
+    const item = scenario?.parameters?.[key];
+    if (!item) return '';
+    return `<div><span>${label}</span><strong>${format(item.within_percent)}%</strong><small>情境基準內</small></div>`;
+  }).join('');
+  document.querySelector('#moenv-benchmark-caveat').textContent = `${scenario.caveat} 這不是個別事業合規率。`;
   document.querySelector('#moenv-summary-note').textContent = `已匯入官方最新 ${summary.record_count.toLocaleString('zh-TW')} 筆申報明細並移除事業識別資訊。這是最新批次抽樣，非全資料母體；申報期間資料也不能單獨用於逐時預報。`;
   document.querySelector('#moenv-generated').textContent = `摘要更新：${new Date(summary.generated_at).toLocaleString('zh-TW')}`;
 }
@@ -224,6 +267,9 @@ async function boot() {
     renderFields(artifact.models, inputs);
     renderForecast(result);
 
+    document.querySelectorAll('[data-trend-param]').forEach((button) => {
+      button.addEventListener('click', () => renderMoenvTrend(moenvSummary, button.dataset.trendParam));
+    });
     document.querySelector('#forecast-form').addEventListener('submit', (event) => {
       event.preventDefault();
       const values = formInputs();

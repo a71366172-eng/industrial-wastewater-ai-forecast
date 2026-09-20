@@ -39,6 +39,7 @@ test('MOENV public summary is anonymized and loaded by the source page', () => {
   assert.equal(summary.source, 'MOENV EMS_S_03');
   assert.equal(summary.privacy, 'aggregated_no_facility_identity');
   assert.equal(summary.input_mode, 'public_preview');
+  assert.equal(summary.reference_scenario.legal_interpretation, 'reference_only_not_compliance');
   assert.ok(summary.record_count > 0);
   assert.ok(summary.parameters.COD.count > 0);
   assert.ok(summary.parameters.SS.count > 0);
@@ -49,4 +50,8 @@ test('MOENV public summary is anonymized and loaded by the source page', () => {
   }
   const app = readFileSync('frontend/src/app-v4.js', 'utf8');
   assert.match(app, /moenv-ems-summary\.json/);
+  assert.match(app, /情境基準內/);
+  assert.match(app, /不是個別事業合規率/);
+  assert.match(app, /moenv-trend-chart/);
+  assert.match(app, /data-trend-param/);
 });

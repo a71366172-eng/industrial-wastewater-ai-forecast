@@ -86,13 +86,27 @@ class MoenvEmsTests(unittest.TestCase):
 
     def test_public_summary_contains_no_facility_identity(self):
         records = [
-            {'plant_id': 'EMS-A-001', 'facility_name': '甲化工測試廠', 'address': '臺北市測試路1號', 'permit_id': 'PERMIT-001', 'parameter': 'COD', 'value': 60.0, 'unit': 'mg/L'},
-            {'plant_id': 'EMS-B-002', 'facility_name': '乙化工測試廠', 'address': '高雄市測試路2號', 'permit_id': 'PERMIT-002', 'parameter': 'COD', 'value': 80.0, 'unit': 'mg/L'},
-            {'plant_id': 'EMS-A-001', 'facility_name': '甲化工測試廠', 'address': '臺北市測試路1號', 'permit_id': 'PERMIT-001', 'parameter': 'SS', 'value': 20.0, 'unit': 'mg/L'},
+            {'plant_id': 'EMS-A-001', 'facility_name': '甲化工測試廠', 'address': '臺北市測試路1號', 'permit_id': 'PERMIT-001', 'period_end': '2025-06-30', 'parameter': 'COD', 'value': 60.0, 'unit': 'mg/L'},
+            {'plant_id': 'EMS-B-002', 'facility_name': '乙化工測試廠', 'address': '高雄市測試路2號', 'permit_id': 'PERMIT-002', 'period_end': '2025-12-31', 'parameter': 'COD', 'value': 120.0, 'unit': 'mg/L'},
+            {'plant_id': 'EMS-A-001', 'facility_name': '甲化工測試廠', 'address': '臺北市測試路1號', 'permit_id': 'PERMIT-001', 'period_end': '2025-06-30', 'parameter': 'SS', 'value': 20.0, 'unit': 'mg/L'},
+            {'plant_id': 'EMS-A-001', 'facility_name': '甲化工測試廠', 'address': '臺北市測試路1號', 'permit_id': 'PERMIT-001', 'period_end': '2025-06-30', 'parameter': 'pH', 'value': 7.0, 'unit': ''},
+            {'plant_id': 'EMS-B-002', 'facility_name': '乙化工測試廠', 'address': '高雄市測試路2號', 'permit_id': 'PERMIT-002', 'period_end': '2025-12-31', 'parameter': 'pH', 'value': 10.0, 'unit': ''},
         ]
         summary = aggregate_public_summary(records)
         self.assertEqual(summary['parameters']['COD']['count'], 2)
-        self.assertEqual(summary['parameters']['COD']['median'], 70.0)
+        self.assertEqual(summary['parameters']['COD']['median'], 90.0)
+        scenario = summary['reference_scenario']
+        self.assertEqual(scenario['industry'], '化工業')
+        self.assertEqual(scenario['legal_interpretation'], 'reference_only_not_compliance')
+        self.assertEqual(scenario['parameters']['COD']['within_count'], 1)
+        self.assertEqual(scenario['parameters']['COD']['outside_count'], 1)
+        self.assertEqual(scenario['parameters']['COD']['within_percent'], 50.0)
+        self.assertEqual(scenario['parameters']['SS']['within_percent'], 100.0)
+        self.assertEqual(scenario['parameters']['pH']['within_percent'], 50.0)
+        trend = summary['period_trends']
+        self.assertEqual([point['period'] for point in trend['COD']], ['2025-06-30', '2025-12-31'])
+        self.assertEqual(trend['COD'][0]['median'], 60.0)
+        self.assertEqual(trend['COD'][0]['count'], 1)
         serialized = str(summary)
         for private_value in ('EMS-A-001', 'EMS-B-002', '甲化工測試廠', '乙化工測試廠', 'PERMIT-001', 'PERMIT-002', '臺北市測試路1號', '高雄市測試路2號'):
             self.assertNotIn(private_value, serialized)

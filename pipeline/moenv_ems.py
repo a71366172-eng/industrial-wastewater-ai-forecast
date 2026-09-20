@@ -14,6 +14,11 @@ from urllib.request import Request, urlopen
 API_ENDPOINT = 'https://data.moenv.gov.tw/api/v2/EMS_S_03'
 PUBLIC_PREVIEW_ENDPOINT = 'https://data.moenv.gov.tw/api/frontstage/datastore.search'
 PUBLIC_RESOURCE_ID = 'f3804119-2cf8-48f5-9df4-09008b5b4f7b'
+CHEMICAL_REFERENCE_LIMITS = {
+    'COD': {'maximum': 100.0, 'unit': 'mg/L'},
+    'SS': {'maximum': 30.0, 'unit': 'mg/L'},
+    'pH': {'minimum': 6.0, 'maximum': 9.0, 'unit': 'pH'},
+}
 PARAMETER_NAMES = {
     '化學需氧量': 'COD',
     '懸浮固體': 'SS',
@@ -229,12 +234,49 @@ def aggregate_public_summary(records: Iterable[dict]) -> dict:
             'p90': _percentile(values, 0.9),
             'maximum': max(values),
         }
+    period_groups: dict[tuple[str, str], list[float]] = {}
+    for record in records:
+        parameter = _text(record.get('parameter'))
+        period = _text(record.get('period_end'))
+        value = record.get('value')
+        if parameter in {'COD', 'SS', 'pH'} and period and isinstance(value, (int, float)):
+            period_groups.setdefault((parameter, period), []).append(float(value))
+    period_trends = {parameter: [] for parameter in ('COD', 'SS', 'pH')}
+    for (parameter, period), values in sorted(period_groups.items()):
+        period_trends[parameter].append({
+            'period': period,
+            'count': len(values),
+            'median': median(values),
+            'p90': _percentile(values, 0.9),
+        })
+    reference_parameters = {}
+    for parameter, limit in CHEMICAL_REFERENCE_LIMITS.items():
+        values = [value for (name, _unit), items in groups.items() if name == parameter for value in items]
+        if not values:
+            continue
+        minimum = limit.get('minimum', float('-inf'))
+        maximum = limit['maximum']
+        within_count = sum(minimum <= value <= maximum for value in values)
+        reference_parameters[parameter] = {
+            **limit,
+            'sample_count': len(values),
+            'within_count': within_count,
+            'outside_count': len(values) - within_count,
+            'within_percent': round(within_count / len(values) * 100, 1),
+        }
     return {
-        'schema_version': '1.0',
+        'schema_version': '1.1',
         'source': 'MOENV EMS_S_03',
         'temporal_resolution': 'reporting_period',
         'privacy': 'aggregated_no_facility_identity',
         'parameters': parameters,
+        'period_trends': period_trends,
+        'reference_scenario': {
+            'industry': '化工業',
+            'legal_interpretation': 'reference_only_not_compliance',
+            'parameters': reference_parameters,
+            'caveat': '樣本混合不同業別與排放情境；僅與化工業中央基準比較，不代表個別事業法定合規率。',
+        },
         'limitations': [
             '申報期間資料不是逐時感測資料',
             '不可單獨用於提前數小時預報',
