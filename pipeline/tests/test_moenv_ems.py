@@ -7,7 +7,9 @@ from pathlib import Path
 from pipeline.moenv_ems import (
     aggregate_public_summary,
     build_api_url,
+    build_public_preview_request,
     download_records,
+    download_public_preview_records,
     load_csv_records,
     normalize_api_record,
     redact_api_url,
@@ -23,6 +25,26 @@ class MoenvEmsTests(unittest.TestCase):
         self.assertIn('api_key=secret-key', url)
         self.assertNotIn('secret-key', redact_api_url(url))
         self.assertIn('api_key=%2A%2A%2A', redact_api_url(url))
+
+    def test_builds_public_preview_request_without_api_key(self):
+        url, payload = build_public_preview_request(offset=20, limit=10)
+        self.assertEqual(url, 'https://data.moenv.gov.tw/api/frontstage/datastore.search')
+        self.assertEqual(payload['resource_id'], 'f3804119-2cf8-48f5-9df4-09008b5b4f7b')
+        self.assertEqual(payload['offset'], 20)
+        self.assertEqual(payload['limit'], 10)
+        self.assertNotIn('api_key', payload)
+
+    def test_public_preview_download_stops_after_short_page(self):
+        offsets = []
+
+        def fake_fetcher(*, offset, limit):
+            offsets.append(offset)
+            count = 2 if offset == 0 else 1
+            return [{'parameter': 'COD', 'value': 50 + index, 'unit': 'mg/l'} for index in range(count)]
+
+        records = download_public_preview_records(page_size=2, max_pages=5, fetcher=fake_fetcher)
+        self.assertEqual(len(records), 3)
+        self.assertEqual(offsets, [0, 2])
 
     def test_download_stops_after_short_page_without_logging_key(self):
         offsets = []

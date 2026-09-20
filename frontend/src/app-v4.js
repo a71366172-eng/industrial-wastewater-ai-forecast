@@ -94,7 +94,7 @@ function shell() {
         <div class="source-grid">
           <article><span>法規</span><h2 id="source-law-title">—</h2><p>pH、SS、COD 限值由版本化設定檔載入。個案許可、地方加嚴、環評或總量管制較嚴時必須覆寫。</p><a id="source-law-link" target="_blank" rel="noreferrer">官方附表四 ↗</a></article>
           <article><span>公開模型資料</span><h2>UCI Water Treatment Plant</h2><p>1990–1991 西班牙都市污水歷史資料，只用於驗證資料管線與建模方法，不代表臺灣化工廠。</p></article>
-          <article><span>臺灣公開申報資料</span><h2>環境部 EMS_S_03</h2><p>API 與官方 CSV 匯入工具已就緒，可補充放流口、承受水體、排放量與申報濃度；時間粒度不足以單獨訓練逐時提前預報。</p><a href="https://data.moenv.gov.tw/dataset/detail/EMS_S_03" target="_blank" rel="noreferrer">查看資料集 ↗</a></article>
+          <article><span>臺灣真實申報資料</span><h2>環境部 EMS_S_03</h2><p id="moenv-summary-note">正在載入匿名統計摘要…</p><dl id="moenv-stats" class="source-stats"></dl><small id="moenv-generated"></small><a href="https://data.moenv.gov.tw/dataset/detail/EMS_S_03" target="_blank" rel="noreferrer">查看資料集 ↗</a></article>
           <article><span>實廠資料入口</span><h2>化工廠訓練資料範本</h2><p>已定義進出水、流量、投藥、曝氣、污泥與品質旗標欄位。正式模型應以實廠時序資料重新訓練。</p><a href="public/data/templates/chemical_plant_training_template.csv">下載 CSV 範本 ↓</a></article>
         </div>
       </section>
@@ -180,16 +180,30 @@ function renderForecast(result) {
       : '預測值低於所選中央基準；仍須依許可條件及實際檢驗結果判讀。';
 }
 
+function renderMoenvSummary(summary) {
+  const labels = { COD: 'COD', SS: 'SS', pH: 'pH' };
+  const rows = Object.entries(labels).map(([key, label]) => {
+    const item = summary.parameters?.[key];
+    if (!item) return '';
+    const unit = item.unit || (key === 'pH' ? 'pH' : 'mg/L');
+    return `<div><dt>${label}（n=${item.count.toLocaleString('zh-TW')}）</dt><dd>中位 ${format(item.median)} ${unit} · P90 ${format(item.p90)} ${unit}</dd></div>`;
+  }).join('');
+  document.querySelector('#moenv-stats').innerHTML = rows;
+  document.querySelector('#moenv-summary-note').textContent = `已匯入官方最新 ${summary.record_count.toLocaleString('zh-TW')} 筆申報明細並移除事業識別資訊。這是最新批次抽樣，非全資料母體；申報期間資料也不能單獨用於逐時預報。`;
+  document.querySelector('#moenv-generated').textContent = `摘要更新：${new Date(summary.generated_at).toLocaleString('zh-TW')}`;
+}
 async function boot() {
   shell();
   try {
-    const [modelResponse, profileResponse] = await Promise.all([
+    const [modelResponse, profileResponse, moenvResponse] = await Promise.all([
       fetch('public/data/effluent-model-v4.json'),
-      fetch('public/data/legal-profiles.json')
+      fetch('public/data/legal-profiles.json'),
+      fetch('public/data/moenv-ems-summary.json')
     ]);
-    if (!modelResponse.ok || !profileResponse.ok) throw new Error('模型或法規設定檔無法載入');
+    if (!modelResponse.ok || !profileResponse.ok || !moenvResponse.ok) throw new Error('模型、法規或真實資料摘要無法載入');
     const artifact = await modelResponse.json();
     const profiles = await profileResponse.json();
+    const moenvSummary = await moenvResponse.json();
     const profile = profiles.profiles[0];
     const inputs = defaultInputs(artifact.models);
     const result = calculate(artifact.models, profile, inputs);
@@ -206,6 +220,7 @@ async function boot() {
     renderLimit('ss', result.ss, profile.limits.ss.max, result.ssAssessment, modelDeploymentState(artifact.models['SS-S']));
     renderLimit('cod', result.cod, profile.limits.cod.max, result.codAssessment, modelDeploymentState(artifact.models['DQO-S']));
     renderModelCards(artifact);
+    renderMoenvSummary(moenvSummary);
     renderFields(artifact.models, inputs);
     renderForecast(result);
 

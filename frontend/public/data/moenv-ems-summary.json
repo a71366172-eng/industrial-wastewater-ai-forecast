@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "source": "MOENV EMS_S_03",
+  "temporal_resolution": "reporting_period",
+  "privacy": "aggregated_no_facility_identity",
+  "parameters": {
+    "COD": {
+      "count": 990,
+      "unit": "mg/l",
+      "minimum": 1.8,
+      "median": 132.0,
+      "p90": 443.1,
+      "maximum": 6180.0
+    },
+    "SS": {
+      "count": 995,
+      "unit": "mg/l",
+      "minimum": 0.5,
+      "median": 38.8,
+      "p90": 129.0,
+      "maximum": 2220.0
+    },
+    "pH": {
+      "count": 306,
+      "unit": "",
+      "minimum": 0.205,
+      "median": 7.4,
+      "p90": 8.1,
+      "maximum": 8.7
+    }
+  },
+  "limitations": [
+    "申報期間資料不是逐時感測資料",
+    "不可單獨用於提前數小時預報",
+    "公開摘要不含事業名稱、地址、統編、許可證號或管制編號"
+  ],
+  "generated_at": "2026-09-20T03:04:08.624452+00:00",
+  "record_count": 5000,
+  "input_mode": "public_preview",
+  "sampling_note": "依官方資料預覽排序擷取最新批次；非全資料母體統計"
+}

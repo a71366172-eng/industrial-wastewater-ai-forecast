@@ -87,11 +87,19 @@ Windows 排程「化工AI專案雲端同步」每 10 分鐘將 D: 工作目錄�
 
 官方資料頁：<https://data.moenv.gov.tw/dataset/detail/EMS_S_03>
 
-API 模式需先在環境部平臺註冊取得 API Key。金鑰只透過環境變數傳入：
+目前可直接使用官方資料頁的公開預覽端點，免 API Key 擷取最新批次。預設會在沒有金鑰時使用此模式：
+
+~~~powershell
+py -3 fetch_moenv_ems.py --mode public-preview --page-size 1000 --max-pages 5
+~~~
+
+目前網站使用最新 5,000 筆明細產生匿名摘要，呈現 COD、SS、pH 的樣本數、中位數與 P90。這是依官方預覽排序取得的最新批次，不是 191 萬筆全資料母體，也不是化工業專屬樣本，因此不直接拿來訓練逐時預報模型。
+
+若已在環境部平臺註冊取得 API Key，可改用會員 API。金鑰只透過環境變數傳入：
 
 ~~~powershell
 $env:MOENV_API_KEY = '你的金鑰'
-py -3 fetch_moenv_ems.py
+py -3 fetch_moenv_ems.py --mode api-key
 ~~~
 
 也可以從官方頁面手動下載 CSV 後匯入：

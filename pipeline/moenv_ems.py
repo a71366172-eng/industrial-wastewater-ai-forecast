@@ -12,6 +12,8 @@ from urllib.request import Request, urlopen
 
 
 API_ENDPOINT = 'https://data.moenv.gov.tw/api/v2/EMS_S_03'
+PUBLIC_PREVIEW_ENDPOINT = 'https://data.moenv.gov.tw/api/frontstage/datastore.search'
+PUBLIC_RESOURCE_ID = 'f3804119-2cf8-48f5-9df4-09008b5b4f7b'
 PARAMETER_NAMES = {
     '化學需氧量': 'COD',
     '懸浮固體': 'SS',
@@ -98,6 +100,36 @@ def normalize_api_record(record: dict) -> dict:
     }
 
 
+def build_public_preview_request(*, offset: int = 0, limit: int = 1000) -> tuple[str, dict]:
+    if offset < 0 or limit < 1 or limit > 1000:
+        raise ValueError('offset must be nonnegative and limit must be 1–1000')
+    return PUBLIC_PREVIEW_ENDPOINT, {
+        'resource_id': PUBLIC_RESOURCE_ID,
+        'limit': limit,
+        'offset': offset,
+    }
+
+
+def fetch_public_preview_page(*, offset: int = 0, limit: int = 1000, timeout: int = 60) -> list[dict]:
+    url, payload = build_public_preview_request(offset=offset, limit=limit)
+    request = Request(
+        url,
+        data=json.dumps(payload).encode('utf-8'),
+        headers={
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'User-Agent': 'wastewater-ai-research/1.0',
+        },
+        method='POST',
+    )
+    with urlopen(request, timeout=timeout) as response:
+        document = json.loads(response.read().decode('utf-8-sig'))
+    records = document.get('payload', {}).get('records', []) if isinstance(document, dict) else []
+    if not isinstance(records, list):
+        raise ValueError('MOENV public preview records field is not a list')
+    return [normalize_api_record(record) for record in records if isinstance(record, dict)]
+
+
 def fetch_api_page(api_key: str, *, offset: int = 0, limit: int = 1000, timeout: int = 60) -> list[dict]:
     url = build_api_url(api_key, offset=offset, limit=limit)
     request = Request(url, headers={'Accept': 'application/json', 'User-Agent': 'wastewater-ai-research/1.0'})
@@ -146,6 +178,26 @@ def download_records(
         if len(batch) < page_size:
             break
     return records
+
+def download_public_preview_records(
+    *,
+    page_size: int = 1000,
+    max_pages: int = 10,
+    fetcher=None,
+) -> list[dict]:
+    if page_size < 1 or page_size > 1000:
+        raise ValueError('page_size must be 1–1000')
+    if max_pages < 1:
+        raise ValueError('max_pages must be positive')
+    page_fetcher = fetch_public_preview_page if fetcher is None else fetcher
+    records: list[dict] = []
+    for page in range(max_pages):
+        batch = page_fetcher(offset=page * page_size, limit=page_size)
+        records.extend(batch)
+        if len(batch) < page_size:
+            break
+    return records
+
 
 def _percentile(values: list[float], fraction: float) -> float:
     ordered = sorted(values)
