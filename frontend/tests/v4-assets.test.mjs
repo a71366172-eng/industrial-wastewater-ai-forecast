@@ -64,3 +64,15 @@ test('MOENV public summary is anonymized and loaded by the source page', () => {
   assert.match(app, /實際值/);
   assert.match(app, /預測值/);
 });
+test('monitoring cadence follows the official automatic monitoring profile', () => {
+  const profile = JSON.parse(readFileSync('frontend/public/data/monitoring-profile.json', 'utf8'));
+  assert.equal(profile.modelGridMinutes, 60);
+  assert.equal(profile.parameters.pH.transmissionMinutes, 5);
+  assert.equal(profile.parameters.conductivity.transmissionMinutes, 5);
+  assert.equal(profile.parameters.COD.transmissionMinutes, 60);
+  assert.equal(profile.parameters.SS.transmissionMinutes, 60);
+  assert.equal(profile.status, 'awaiting_high_frequency_data');
+  const app = readFileSync('frontend/src/app-v4.js', 'utf8');
+  assert.match(app, /monitoring-profile\.json/);
+  assert.match(app, /未來 1 小時/);
+});

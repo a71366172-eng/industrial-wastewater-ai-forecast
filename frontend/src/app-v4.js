@@ -91,6 +91,7 @@ function shell() {
 
       <section class="page" data-page="trends">
         <header class="section-heading"><p class="eyebrow">TRENDS & PREDICTIONS</p><h1>趨勢與 AI 預測折線</h1><p>上圖呈現臺灣公開申報期間趨勢；下圖呈現模型保留測試集的實際值與預測值。兩種資料來源不同，不直接串成同一條時間線。</p></header>
+        <aside class="monitoring-profile"><div><span>正式時間網格</span><strong id="monitoring-grid">—</strong></div><div><span>pH／導電度</span><strong id="monitoring-fast">—</strong></div><div><span>COD／SS</span><strong id="monitoring-hourly">—</strong></div><div><span>正式預測目標</span><strong id="monitoring-horizon">—</strong></div><p id="monitoring-status"></p><a id="monitoring-source" target="_blank" rel="noreferrer">查看官方規定 ↗</a></aside>
         <article class="trend-panel">
           <div class="trend-header"><div><span>臺灣申報期間趨勢</span><h2>匿名水質中位數</h2></div><div class="trend-controls" aria-label="選擇申報趨勢測項"><button type="button" data-trend-param="COD">COD</button><button type="button" data-trend-param="SS">SS</button><button type="button" data-trend-param="pH">pH</button></div></div>
           <div id="moenv-trend-chart" class="trend-chart" role="img" aria-label="環境部申報資料期間趨勢折線圖"></div>
@@ -257,6 +258,14 @@ function renderMoenvTrend(summary, parameter = 'COD') {
   document.querySelector('#moenv-trend-note').textContent = `${parameter} 共 ${points.length} 個申報期；圓點可查看該期樣本數。各期樣本數差異大，且資料混合不同業別，因此趨勢只供資料探索。`;
   document.querySelectorAll('[data-trend-param]').forEach((button) => button.classList.toggle('active', button.dataset.trendParam === parameter));
 }
+function renderMonitoringProfile(profile) {
+  document.querySelector('#monitoring-grid').textContent = `每 ${profile.modelGridMinutes} 分鐘`;
+  document.querySelector('#monitoring-fast').textContent = `每 ${profile.parameters.pH.transmissionMinutes} 分鐘（每小時至少 ${profile.parameters.pH.hourlyExpectedMinimum} 筆）`;
+  document.querySelector('#monitoring-hourly').textContent = `每 ${profile.parameters.COD.transmissionMinutes} 分鐘至少 1 筆`;
+  document.querySelector('#monitoring-horizon').textContent = `未來 ${profile.forecastHorizonMinutes / 60} 小時 COD／SS`;
+  document.querySelector('#monitoring-status').textContent = '目前尚未接入高頻 CWMS／實廠感測資料；正式目標是預測未來 1 小時 COD／SS。下方申報趨勢是背景資料，AI 雙折線是歷史方法驗證。';
+  document.querySelector('#monitoring-source').href = profile.officialSource.url;
+}
 function renderValidationTrend(models, profile, target = 'DQO-S') {
   const model = models[target];
   const points = model?.testSeries || [];
@@ -305,15 +314,17 @@ function renderMoenvSummary(summary) {
 async function boot() {
   shell();
   try {
-    const [modelResponse, profileResponse, moenvResponse] = await Promise.all([
+    const [modelResponse, profileResponse, moenvResponse, monitoringResponse] = await Promise.all([
       fetch('public/data/effluent-model-v4.json'),
       fetch('public/data/legal-profiles.json'),
-      fetch('public/data/moenv-ems-summary.json')
+      fetch('public/data/moenv-ems-summary.json'),
+      fetch('public/data/monitoring-profile.json')
     ]);
-    if (!modelResponse.ok || !profileResponse.ok || !moenvResponse.ok) throw new Error('模型、法規或真實資料摘要無法載入');
+    if (!modelResponse.ok || !profileResponse.ok || !moenvResponse.ok || !monitoringResponse.ok) throw new Error('模型、法規或資料設定無法載入');
     const artifact = await modelResponse.json();
     const profiles = await profileResponse.json();
     const moenvSummary = await moenvResponse.json();
+    const monitoringProfile = await monitoringResponse.json();
     const profile = profiles.profiles[0];
     const inputs = defaultInputs(artifact.models);
     const result = calculate(artifact.models, profile, inputs);
@@ -330,6 +341,7 @@ async function boot() {
     renderLimit('ss', result.ss, profile.limits.ss.max, result.ssAssessment, modelDeploymentState(artifact.models['SS-S']));
     renderLimit('cod', result.cod, profile.limits.cod.max, result.codAssessment, modelDeploymentState(artifact.models['DQO-S']));
     renderModelCards(artifact);
+    renderMonitoringProfile(monitoringProfile);
     renderMoenvSummary(moenvSummary);
     renderValidationTrend(artifact.models, profile);
     renderFields(artifact.models, inputs);

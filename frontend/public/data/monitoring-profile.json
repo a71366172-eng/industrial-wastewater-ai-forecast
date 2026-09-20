@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "awaiting_high_frequency_data",
+  "modelGridMinutes": 60,
+  "forecastHorizonMinutes": 60,
+  "parameters": {
+    "pH": { "transmissionMinutes": 5, "hourlyExpectedMinimum": 12 },
+    "conductivity": { "transmissionMinutes": 5, "hourlyExpectedMinimum": 12 },
+    "COD": { "transmissionMinutes": 60, "hourlyExpectedMinimum": 1 },
+    "SS": { "transmissionMinutes": 60, "hourlyExpectedMinimum": 1 }
+  },
+  "officialSource": {
+    "title": "水污染防治措施及檢測申報管理辦法相關自動監測規定",
+    "url": "https://oaout.moenv.gov.tw/Law/EngLawContent.aspx?id=274&lan=C"
+  },
+  "dataRoles": {
+    "EMS_S_03": "background_reporting_period_reference",
+    "CWMS_or_plant_sensors": "required_for_hourly_forecast"
+  },
+  "limitations": [
+    "目前尚未接入可連續訓練的 CWMS 或化工廠感測時序",
+    "EMS_S_03 申報期間資料不能代替每小時監測資料",
+    "正式預報目標為未來 1 小時 COD、SS 與超限風險"
+  ]
+}
